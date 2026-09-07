@@ -2,14 +2,18 @@
 # Launch the dreamos live ISO in QEMU for interactive testing.
 #
 # Usage:
-#   ./start.sh [--uefi|--bios] [--iso PATH] [--mem MB] [--res WxH] [--] [extra qemu args]
+#   ./start.sh [--uefi|--bios] [--iso PATH] [--mem MB] [--res WxH] [--fit|--fullscreen] [--] [extra qemu args]
 #
 #   --uefi        boot via OVMF (UEFI firmware)
 #   --bios        boot via SeaBIOS (legacy, default)
 #   --iso PATH    ISO to boot (default: dreamos-amd64.hybrid.iso)
 #   --mem MB      guest RAM in MB (default: 3072)
 #   --res WxH     preferred display resolution (default: 1920x1080)
+#   --fit         scale the guest into the window instead of growing the
+#                 window to the guest size (for hosts smaller than --res)
+#   --fullscreen  open QEMU full screen
 #
+# By default the QEMU window grows to the guest resolution once X starts.
 # Press Enter at the boot menu to start the live system.
 set -euo pipefail
 
@@ -21,6 +25,7 @@ FIRMWARE="bios"
 ISO_PATH="${PROJECT_DIR}/dreamos-amd64.hybrid.iso"
 MEM_MB="3072"
 RESOLUTION="1920x1080"
+DISPLAY_MODE="grow"
 EXTRA_ARGS=()
 
 while [ "$#" -gt 0 ]; do
@@ -30,8 +35,10 @@ while [ "$#" -gt 0 ]; do
         --iso) ISO_PATH="$2"; shift 2 ;;
         --mem) MEM_MB="$2"; shift 2 ;;
         --res) RESOLUTION="$2"; shift 2 ;;
+        --fit) DISPLAY_MODE="fit"; shift ;;
+        --fullscreen) DISPLAY_MODE="fullscreen"; shift ;;
         --) shift; EXTRA_ARGS+=("$@"); break ;;
-        -h|--help) sed -n '2,13p' "${BASH_SOURCE[0]}" | sed 's/^#\s\{0,1\}//'; exit 0 ;;
+        -h|--help) sed -n '2,16p' "${BASH_SOURCE[0]}" | sed 's/^#\s\{0,1\}//'; exit 0 ;;
         *) EXTRA_ARGS+=("$1"); shift ;;
     esac
 done
@@ -62,10 +69,18 @@ QEMU_ARGS=(
     -usb -device usb-tablet
 )
 
-# Scale the window to fit the host screen unless the caller sets -display.
+# Display: by default let the GTK window follow the guest resolution, so it
+# grows to ${RESOLUTION} once X starts. --fit scales instead; --fullscreen
+# goes full screen. Skipped entirely if the caller passes its own -display.
 case " ${EXTRA_ARGS[*]-} " in
-    *" -display "*|*" -nographic "*) : ;;
-    *) QEMU_ARGS+=(-display gtk,zoom-to-fit=on) ;;
+    *" -display "*|*" -nographic "*|*" -spice "*) : ;;
+    *)
+        case "${DISPLAY_MODE}" in
+            fit)        QEMU_ARGS+=(-display gtk,zoom-to-fit=on) ;;
+            fullscreen) QEMU_ARGS+=(-display gtk,full-screen=on) ;;
+            *)          QEMU_ARGS+=(-display gtk,zoom-to-fit=off) ;;
+        esac
+        ;;
 esac
 
 # Use hardware acceleration when the host exposes /dev/kvm.

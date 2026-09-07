@@ -41,6 +41,8 @@
   (QEMU synthetic right-click does not register), Calamares install,
   keyboard toggle, USB persistence.
 - `start.sh`: interactive QEMU launcher (`--bios`/`--uefi`, `--iso`,
-  `--mem`, `--res`, KVM auto-detect, persistent per-project UEFI NVRAM).
-  Default guest resolution 1920x1080 via a `virtio-vga` EDID; window
-  scales to the host screen (`-display gtk,zoom-to-fit=on`).
+  `--mem`, `--res`, `--fit`, `--fullscreen`, KVM auto-detect, persistent
+  per-project UEFI NVRAM). Default guest resolution 1920x1080 via a
+  `virtio-vga` EDID; the GTK window follows the guest resolution
+  (`zoom-to-fit=off`) so it grows to full size once X starts, `--fit`
+  scales instead for smaller host screens.

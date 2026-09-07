@@ -33,13 +33,16 @@ in the project root.
 ./start.sh                 # BIOS legacy (default), 1920x1080
 ./start.sh --uefi          # UEFI via OVMF
 ./start.sh --res 1280x800  # pick another resolution
-./start.sh --help          # all options (--iso, --mem, extra qemu args after --)
+./start.sh --fit           # scale into the window (host smaller than --res)
+./start.sh --fullscreen
+./start.sh --help          # all options
 ```
 
-`start.sh` enables KVM when `/dev/kvm` is available, boots the guest at
-`--res` (default `1920x1080`, via a `virtio-vga` EDID), scales the window
-to fit the host, and keeps a per-project UEFI NVRAM file
-(`.ovmf-vars.fd`, gitignored).
+`start.sh` enables KVM when `/dev/kvm` is available and boots the guest at
+`--res` (default `1920x1080`, via a `virtio-vga` EDID). By default the
+QEMU window grows to the guest resolution once X starts; use `--fit` on a
+host screen smaller than the guest. It keeps a per-project UEFI NVRAM
+file (`.ovmf-vars.fd`, gitignored).
 
 Raw commands, if you prefer:
 
