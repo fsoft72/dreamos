@@ -1,4 +1,6 @@
 xserver-xorg
+xserver-xorg-core
+xserver-xorg-legacy
 xserver-xorg-input-libinput
 xinit
 x11-xserver-utils

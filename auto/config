@@ -20,5 +20,5 @@ lb config noauto \
     --iso-volume "dreamos" \
     --iso-publisher "dreamos" \
     --memtest none \
-    --bootappend-live "boot=live components username=user hostname=dreamos locales=it_IT.UTF-8 keyboard-layouts=it timezone=Europe/Rome persistence" \
+    --bootappend-live "boot=live components username=user hostname=dreamos locales=it_IT.UTF-8 keyboard-layouts=it timezone=Europe/Rome persistence systemd.unit=multi-user.target" \
     "${@}"

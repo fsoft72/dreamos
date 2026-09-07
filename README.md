@@ -33,10 +33,17 @@ in the project root.
 # BIOS legacy
 qemu-system-x86_64 -m 2048 -cdrom dreamos-amd64.hybrid.iso
 
-# UEFI
-qemu-system-x86_64 -m 2048 -bios /usr/share/OVMF/OVMF_CODE.fd \
+# UEFI (OVMF path varies by distro; Debian/Ubuntu ship OVMF_CODE_4M.fd)
+qemu-system-x86_64 -m 2048 \
+    -drive if=pflash,format=raw,unit=0,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
+    -drive if=pflash,format=raw,unit=1,file=/tmp/ovmf_vars.fd \
     -cdrom dreamos-amd64.hybrid.iso
+# (copy /usr/share/OVMF/OVMF_VARS_4M.fd to /tmp/ovmf_vars.fd first)
 ```
+
+Both bootloaders (isolinux for BIOS, GRUB for UEFI) wait for a keypress
+at the menu (`timeout 0` / `timeout -1`, the Debian live default); press
+Enter to boot the live system.
 
 Automated sanity checks:
 

@@ -11,9 +11,12 @@ TIMEZONE="Europe/Rome"
 sed -i 's/^# *\(it_IT.UTF-8 UTF-8\)/\1/' /etc/locale.gen
 sed -i 's/^# *\(en_US.UTF-8 UTF-8\)/\1/' /etc/locale.gen
 locale-gen
-cat > /etc/default/locale <<EOF
-LANG=${LOCALE_DEFAULT}
-EOF
+
+# On trixie /etc/default/locale is a symlink to /etc/locale.conf; write
+# the real target so the value sticks, and keep the compat path valid.
+printf 'LANG=%s\n' "${LOCALE_DEFAULT}" > /etc/locale.conf
+rm -f /etc/default/locale
+printf 'LANG=%s\n' "${LOCALE_DEFAULT}" > /etc/default/locale
 
 # Keyboard: Italian first, US second, toggle with Alt+Shift.
 cat > /etc/default/keyboard <<EOF

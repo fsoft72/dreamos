@@ -17,7 +17,8 @@ un container Docker Debian: l'host Ubuntu 25.10 non viene modificato.
 | Toolchain di build | Container Docker `debian:trixie` con `live-build` di Debian |
 | Base | Debian 13 "trixie" stable, architettura `amd64` |
 | Firmware boot | UEFI + BIOS legacy nella stessa ISO ibrida |
-| Login | LightDM con autologin sull'utente `live` in sessione Openbox |
+| Login (live) | Autologin su tty1 dell'utente `user`, poi `startx` -> `openbox-session` (nessun display manager attivo nella live) |
+| Login (installato) | LightDM (greeter normale, sessione Openbox preselezionata) |
 | Desktop | Openbox minimale: `tint2`, `lxterminal`, `pcmanfm`, `feh` |
 | Browser | Nessuno |
 | Installer su disco | Calamares (`calamares` + `calamares-settings-debian`) |
@@ -117,7 +118,7 @@ lb config noauto \
     --iso-volume "dreamos" \
     --iso-publisher "dreamos" \
     --memtest none \
-    --bootappend-live "boot=live components username=user hostname=dreamos locales=it_IT.UTF-8 keyboard-layouts=it timezone=Europe/Rome persistence" \
+    --bootappend-live "boot=live components username=user hostname=dreamos locales=it_IT.UTF-8 keyboard-layouts=it timezone=Europe/Rome persistence systemd.unit=multi-user.target" \
     "${@}"
 ```
 
@@ -148,8 +149,11 @@ Locale/tastiera doppia: l'hook `0100` mette in `/etc/locale.gen` sia
 `config/package-lists/desktop.list.chroot`:
 ```
 xserver-xorg
+xserver-xorg-core
+xserver-xorg-legacy
 xserver-xorg-input-libinput
 xinit
+x11-xserver-utils
 openbox
 lightdm
 lightdm-gtk-greeter
@@ -158,6 +162,8 @@ lxterminal
 pcmanfm
 feh
 ```
+(`xserver-xorg-legacy` fornisce `Xorg.wrap` per `startx` rootless su
+tty1; `lightdm` resta installato per il sistema installato)
 
 `config/package-lists/network.list.chroot`:
 ```
@@ -174,7 +180,12 @@ firmware-iwlwifi
 live-boot
 live-config
 live-config-systemd
+user-setup
+live-tools
 ```
+(`user-setup` e `live-tools` sono *Recommends* di `live-config`: con
+`--apt-recommends false` vanno messi espliciti, altrimenti l'account
+`user` non viene creato al boot e l'autologin fallisce)
 
 `config/package-lists/installer.list.chroot`:
 ```
@@ -197,13 +208,19 @@ includes.chroot - config statica:
   desktop virtuali
 - `etc/skel/.config/tint2/tint2rc`: pannello in basso, taskbar +
   systray + orologio
-- `etc/lightdm/lightdm.conf.d/50-dreamos.conf`:
+- `etc/systemd/system/getty@tty1.service.d/autologin.conf`: autologin di
+  `user` su tty1 (`agetty --autologin user`); usato solo nella live
+- `etc/skel/.bash_profile`: se `tty1` e nessun `DISPLAY`, `exec startx`
+- `etc/skel/.xinitrc`: `exec openbox-session`
+- `etc/lightdm/lightdm.conf.d/50-dreamos.conf` (sistema installato):
   ```ini
   [Seat:*]
-  autologin-user=user
-  autologin-session=openbox
   user-session=openbox
+  greeter-session=lightdm-gtk-greeter
   ```
+- la live forza `systemd.unit=multi-user.target` in `bootappend-live`
+  (override runtime, non persistito): nessun display manager parte nella
+  live; il sistema installato mantiene `graphical.target` -> LightDM
 - `usr/share/backgrounds/dreamos.png`: sfondo segnaposto tinta unita
   generato in un hook (niente binari nel repo)
 

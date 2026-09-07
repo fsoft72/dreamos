@@ -1,4 +1,5 @@
 # dreamos Openbox session autostart
 feh --bg-fill /usr/share/backgrounds/dreamos.png &
 tint2 &
-nm-applet &
+# Give tint2 a moment to create its systray before nm-applet docks into it.
+(sleep 2 && nm-applet) &

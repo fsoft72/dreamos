@@ -446,7 +446,17 @@ firmware-iwlwifi
 live-boot
 live-config
 live-config-systemd
+user-setup
+live-tools
 ```
+
+> **Why `user-setup` and `live-tools` are explicit (discovered during
+> execution):** `live-config` only *Recommends* them, and `auto/config`
+> sets `--apt-recommends false`. Without `user-setup` the
+> `0030-user-setup` live-config component cannot create the live `user`
+> account, so console autologin prints `Authentication failure` and
+> `lightdm.service` fails outright (autologin user does not exist).
+> `live-tools` provides the `/usr/bin/live-*` helpers live-config uses.
 
 - [ ] **Step 4: Create `config/package-lists/installer.list.chroot`**
 
@@ -500,13 +510,25 @@ git commit -m "Add chroot package lists"
 
 ---
 
-## Task 5: Openbox / LightDM / tint2 static config
+## Task 5: Openbox / login / tint2 static config
+
+> **Login flow (revised during execution, per user request):** the LIVE
+> session does NOT run a display manager. It uses tty1 autologin +
+> `startx`. LightDM is still installed and configured for the INSTALLED
+> system only. See Task 8 for the concrete files:
+> `config/includes.chroot/etc/systemd/system/getty@tty1.service.d/autologin.conf`,
+> `config/includes.chroot/etc/skel/.bash_profile`,
+> `config/includes.chroot/etc/skel/.xinitrc`, and
+> `auto/config` gains `systemd.unit=multi-user.target` in `--bootappend-live`.
+> The `lightdm.conf.d/50-dreamos.conf` drop-in keeps only
+> `user-session=openbox` / `greeter-session=lightdm-gtk-greeter` (no
+> autologin). The hand-written `tint2rc` was dropped - tint2 17.x
+> rejected it; the packaged default is used instead.
 
 **Files:**
 - Create: `config/includes.chroot/etc/xdg/openbox/autostart`
 - Create: `config/includes.chroot/etc/xdg/openbox/menu.xml`
 - Create: `config/includes.chroot/etc/lightdm/lightdm.conf.d/50-dreamos.conf`
-- Create: `config/includes.chroot/etc/skel/.config/tint2/tint2rc`
 - Create: `config/includes.chroot/usr/share/backgrounds/dreamos.png`
 
 **Interfaces:**
@@ -932,33 +954,41 @@ Expected: kernel/live-boot messages appear on serial; no immediate `Boot failed`
 
 - [ ] **Step 5: UEFI boot smoke test**
 
-Run:
+Run (Debian/Ubuntu ship split OVMF; copy the vars template to a writable
+file and pass both via pflash):
 ```bash
-test -f /usr/share/OVMF/OVMF_CODE.fd || echo "install 'ovmf' on the host first"
-timeout 120 qemu-system-x86_64 -m 2048 -bios /usr/share/OVMF/OVMF_CODE.fd \
-    -cdrom dreamos-amd64.hybrid.iso -display none -serial stdio || true
+cp /usr/share/OVMF/OVMF_VARS_4M.fd /tmp/ovmf_vars.fd
+timeout 150 qemu-system-x86_64 -m 3072 -enable-kvm \
+    -drive if=pflash,format=raw,unit=0,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
+    -drive if=pflash,format=raw,unit=1,file=/tmp/ovmf_vars.fd \
+    -cdrom dreamos-amd64.hybrid.iso || true
 ```
-Expected: GRUB loads, kernel boots, live-boot messages on serial; no `BdsDxe: failed to load Boot0001`.
+Expected: GRUB loads, kernel boots; no `BdsDxe: failed to load Boot0001`.
 
 - [ ] **Step 6: Manual graphical check (document result in commit message)**
 
-Run: `qemu-system-x86_64 -m 2048 -enable-kvm -cdrom dreamos-amd64.hybrid.iso`
-Verify by eye, then close QEMU:
-- LightDM auto-logs into Openbox (no password prompt).
-- tint2 panel visible at the bottom; nm-applet icon in the systray.
-- Right-click desktop shows the menu; "Terminal" opens `lxterminal`.
-- In the terminal: `localectl status` shows `System Locale: LANG=it_IT.UTF-8` and `X11 Layout: it,us`; `timedatectl` shows `Time zone: Europe/Rome`.
+Run: `qemu-system-x86_64 -m 3072 -enable-kvm -cdrom dreamos-amd64.hybrid.iso`
+Press Enter at the GRUB/isolinux menu. Verify by eye:
+- Boots to `multi-user.target`, tty1 auto-logs in `user`, `startx` launches
+  Openbox (no LightDM in the live session).
+- tint2 panel at the bottom; nm-applet icon in the systray; `feh` wallpaper.
+- Right-click desktop shows the Openbox menu; "Terminal" opens `lxterminal`.
+- In the terminal: `localectl status` shows `System Locale: LANG=it_IT.UTF-8`
+  and `X11 Layout: it,us`; `timedatectl` shows `Time zone: Europe/Rome`.
 - `locale -a` lists both `it_IT.utf8` and `en_US.utf8`.
 - `id user` shows group `sudo`.
 - "Install dreamos" launches Calamares (cancel before partitioning).
+- Alt+Shift toggles the keyboard layout it <-> us.
+
+Automation note: a headless QEMU driven over QMP can boot to the desktop
+(one `send-key ret` at GRUB) and screenshot via `screendump`, but
+synthetic right-click through `input-send-event` does not reach Openbox,
+so the menu pop must be checked in an interactive QEMU.
 
 - [ ] **Step 7: Update `CHANGES.md`**
 
-```markdown
-- Task 8: first full ISO build; verified BIOS + UEFI boot and Openbox autologin. Release 0.1.0.
-```
-
-Change the `## Unreleased` heading to `## 0.1.0 - 2026-09-07`.
+Add the Task 8 entry and change the `## Unreleased` heading to
+`## 0.1.0 - 2026-09-07`.
 
 - [ ] **Step 8: Commit and tag**
 
