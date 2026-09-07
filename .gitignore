@@ -27,6 +27,7 @@ live-image-*.packages
 !/config/hooks/
 !/config/includes.chroot/
 !/config/package-lists/
+!/config/bootloaders/
 
 # hooks/: live-build symlinks its own hooks here on every `lb config`.
 # Keep only our 0xxx-prefixed custom hooks.

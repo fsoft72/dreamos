@@ -51,3 +51,10 @@
   `virtio-vga` EDID; the GTK window follows the guest resolution
   (`zoom-to-fit=off`) so it grows to full size once X starts, `--fit`
   scales instead for smaller host screens.
+- `config/bootloaders/splash.svg`: local copy of the live-build splash
+  template with the title line (`@PROJECT@ @VERSION@ (@DISTRIBUTION@)`,
+  hard-coded to "Debian GNU/Linux" by `binary_bootloader_splash`) changed
+  to "DreamOS". live-build picks up `config/bootloaders/splash.svg`
+  automatically and renders it into `isolinux/splash.png` and
+  `boot/grub/splash.png`, so both the BIOS (syslinux) and UEFI (grub)
+  boot screens now read "DreamOS".
