@@ -1,0 +1,6 @@
+#!/bin/sh
+# `lb clean` wrapper. `noauto` is REQUIRED: without it `lb clean` would
+# re-execute this script, which calls `lb clean` again, forking forever.
+set -e
+
+lb clean noauto "${@}"

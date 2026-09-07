@@ -1,0 +1,24 @@
+#!/bin/sh
+# Single source of truth for `lb config`. Regenerate config/ with:
+#   lb config        (which re-runs this script)
+set -e
+
+lb config noauto \
+    --mode debian \
+    --distribution trixie \
+    --archive-areas "main contrib non-free non-free-firmware" \
+    --architectures amd64 \
+    --linux-flavours amd64 \
+    --binary-images iso-hybrid \
+    --bootloaders "syslinux,grub-efi" \
+    --debian-installer none \
+    --apt-recommends false \
+    --apt-indices false \
+    --firmware-chroot true \
+    --firmware-binary true \
+    --iso-application "dreamos" \
+    --iso-volume "dreamos" \
+    --iso-publisher "dreamos" \
+    --memtest none \
+    --bootappend-live "boot=live components username=user hostname=dreamos locales=it_IT.UTF-8 keyboard-layouts=it timezone=Europe/Rome persistence" \
+    "${@}"
