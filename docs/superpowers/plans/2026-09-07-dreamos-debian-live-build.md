@@ -730,12 +730,14 @@ fi
 
 - [ ] **Step 5: Make all hooks executable and syntax-check them**
 
-Run:
+Run (target our `0*` hooks only - a prior `lb config` leaves live-build's
+own `1000+`/`5000+`/`8000+` hook symlinks in this directory, which dangle
+on the host and would break a bare `chmod`/`sh -n` glob):
 ```bash
-chmod +x config/hooks/normal/*.hook.chroot
-for f in config/hooks/normal/*.hook.chroot; do sh -n "$f" && echo "syntax ok: $f"; done
+chmod +x config/hooks/normal/0*.hook.chroot
+for f in config/hooks/normal/0*.hook.chroot; do sh -n "$f" && echo "syntax ok: $f"; done
 ```
-Expected: one `syntax ok:` line per hook, no errors.
+Expected: one `syntax ok:` line per custom hook, no errors.
 
 - [ ] **Step 6: Update `CHANGES.md`**
 

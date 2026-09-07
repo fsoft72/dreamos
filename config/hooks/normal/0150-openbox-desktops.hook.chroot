@@ -1,0 +1,8 @@
+#!/bin/sh
+# Reduce Openbox virtual desktops from the packaged default (4) to 2.
+set -e
+
+RC_FILE="/etc/xdg/openbox/rc.xml"
+
+test -f "${RC_FILE}" || exit 0
+sed -i 's|<number>4</number>|<number>2</number>|' "${RC_FILE}"

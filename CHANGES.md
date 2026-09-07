@@ -11,3 +11,6 @@
   packages verified present in the trixie archive.
 - Task 5: Openbox autostart/menu, LightDM autologin drop-in, tint2 bottom
   panel in `/etc/skel`, and a 2x2 placeholder wallpaper.
+- Task 6: chroot hooks - locale/keyboard/timezone (0100), Openbox 2-desktop
+  default (0150), Calamares launcher + `user` in `sudo` (0200), image
+  cleanup (0300).

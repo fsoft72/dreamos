@@ -1,0 +1,15 @@
+#!/bin/sh
+# Trim the chroot to keep the ISO small.
+set -e
+
+apt-get clean
+rm -rf /usr/share/doc/*
+rm -rf /var/log/*
+find /var/cache/apt/archives -type f -name '*.deb' -delete
+
+# Drop locale data except Italian and English.
+if [ -d /usr/share/locale ]; then
+    find /usr/share/locale -mindepth 1 -maxdepth 1 -type d \
+        ! -name 'it*' ! -name 'en*' ! -name 'C*' ! -name 'locale.alias' \
+        -exec rm -rf {} +
+fi

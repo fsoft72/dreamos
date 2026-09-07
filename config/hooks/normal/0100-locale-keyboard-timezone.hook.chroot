@@ -1,0 +1,29 @@
+#!/bin/sh
+# Bake locale, keyboard and timezone defaults into the installed system.
+# live-config also applies these at boot from the kernel command line;
+# this makes an on-disk install (via Calamares) match without relying on it.
+set -e
+
+LOCALE_DEFAULT="it_IT.UTF-8"
+TIMEZONE="Europe/Rome"
+
+# Locales: generate both, default to Italian.
+sed -i 's/^# *\(it_IT.UTF-8 UTF-8\)/\1/' /etc/locale.gen
+sed -i 's/^# *\(en_US.UTF-8 UTF-8\)/\1/' /etc/locale.gen
+locale-gen
+cat > /etc/default/locale <<EOF
+LANG=${LOCALE_DEFAULT}
+EOF
+
+# Keyboard: Italian first, US second, toggle with Alt+Shift.
+cat > /etc/default/keyboard <<EOF
+XKBMODEL="pc105"
+XKBLAYOUT="it,us"
+XKBVARIANT=","
+XKBOPTIONS="grp:alt_shift_toggle"
+BACKSPACE="guess"
+EOF
+
+# Timezone.
+echo "${TIMEZONE}" > /etc/timezone
+ln -sf "/usr/share/zoneinfo/${TIMEZONE}" /etc/localtime
