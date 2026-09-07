@@ -41,4 +41,6 @@
   (QEMU synthetic right-click does not register), Calamares install,
   keyboard toggle, USB persistence.
 - `start.sh`: interactive QEMU launcher (`--bios`/`--uefi`, `--iso`,
-  `--mem`, KVM auto-detect, persistent per-project UEFI NVRAM).
+  `--mem`, `--res`, KVM auto-detect, persistent per-project UEFI NVRAM).
+  Default guest resolution 1920x1080 via a `virtio-vga` EDID; window
+  scales to the host screen (`-display gtk,zoom-to-fit=on`).

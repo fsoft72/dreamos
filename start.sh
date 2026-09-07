@@ -2,12 +2,13 @@
 # Launch the dreamos live ISO in QEMU for interactive testing.
 #
 # Usage:
-#   ./start.sh [--uefi|--bios] [--iso PATH] [--mem MB] [--] [extra qemu args]
+#   ./start.sh [--uefi|--bios] [--iso PATH] [--mem MB] [--res WxH] [--] [extra qemu args]
 #
 #   --uefi        boot via OVMF (UEFI firmware)
 #   --bios        boot via SeaBIOS (legacy, default)
 #   --iso PATH    ISO to boot (default: dreamos-amd64.hybrid.iso)
 #   --mem MB      guest RAM in MB (default: 3072)
+#   --res WxH     preferred display resolution (default: 1920x1080)
 #
 # Press Enter at the boot menu to start the live system.
 set -euo pipefail
@@ -19,6 +20,7 @@ OVMF_VARS_TEMPLATE="/usr/share/OVMF/OVMF_VARS_4M.fd"
 FIRMWARE="bios"
 ISO_PATH="${PROJECT_DIR}/dreamos-amd64.hybrid.iso"
 MEM_MB="3072"
+RESOLUTION="1920x1080"
 EXTRA_ARGS=()
 
 while [ "$#" -gt 0 ]; do
@@ -27,11 +29,17 @@ while [ "$#" -gt 0 ]; do
         --bios) FIRMWARE="bios"; shift ;;
         --iso) ISO_PATH="$2"; shift 2 ;;
         --mem) MEM_MB="$2"; shift 2 ;;
+        --res) RESOLUTION="$2"; shift 2 ;;
         --) shift; EXTRA_ARGS+=("$@"); break ;;
-        -h|--help) sed -n '2,12p' "${BASH_SOURCE[0]}" | sed 's/^#\s\{0,1\}//'; exit 0 ;;
+        -h|--help) sed -n '2,13p' "${BASH_SOURCE[0]}" | sed 's/^#\s\{0,1\}//'; exit 0 ;;
         *) EXTRA_ARGS+=("$1"); shift ;;
     esac
 done
+
+case "${RESOLUTION}" in
+    [0-9]*x[0-9]*) XRES="${RESOLUTION%x*}"; YRES="${RESOLUTION#*x}" ;;
+    *) echo "ERROR: --res must be WxH, e.g. 1920x1080 (got '${RESOLUTION}')" >&2; exit 1 ;;
+esac
 
 command -v qemu-system-x86_64 >/dev/null || {
     echo "ERROR: qemu-system-x86_64 not found (install 'qemu-system-x86')" >&2
@@ -48,9 +56,17 @@ QEMU_ARGS=(
     -cdrom "${ISO_PATH}"
     -boot d
     -device virtio-net,netdev=n0 -netdev user,id=n0
-    -vga virtio
+    # virtio-gpu with an EDID advertising the requested mode as preferred,
+    # so the guest X server comes up at ${RESOLUTION} instead of 1024x768.
+    -device "virtio-vga,edid=on,xres=${XRES},yres=${YRES}"
     -usb -device usb-tablet
 )
+
+# Scale the window to fit the host screen unless the caller sets -display.
+case " ${EXTRA_ARGS[*]-} " in
+    *" -display "*|*" -nographic "*) : ;;
+    *) QEMU_ARGS+=(-display gtk,zoom-to-fit=on) ;;
+esac
 
 # Use hardware acceleration when the host exposes /dev/kvm.
 if [ -w /dev/kvm ]; then

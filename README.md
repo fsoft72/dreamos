@@ -30,13 +30,16 @@ in the project root.
 ## Boot test
 
 ```sh
-./start.sh            # BIOS legacy (default)
-./start.sh --uefi     # UEFI via OVMF
-./start.sh --help     # all options (--iso, --mem, extra qemu args after --)
+./start.sh                 # BIOS legacy (default), 1920x1080
+./start.sh --uefi          # UEFI via OVMF
+./start.sh --res 1280x800  # pick another resolution
+./start.sh --help          # all options (--iso, --mem, extra qemu args after --)
 ```
 
-`start.sh` enables KVM when `/dev/kvm` is available and keeps a
-per-project UEFI NVRAM file (`.ovmf-vars.fd`, gitignored).
+`start.sh` enables KVM when `/dev/kvm` is available, boots the guest at
+`--res` (default `1920x1080`, via a `virtio-vga` EDID), scales the window
+to fit the host, and keeps a per-project UEFI NVRAM file
+(`.ovmf-vars.fd`, gitignored).
 
 Raw commands, if you prefer:
 
