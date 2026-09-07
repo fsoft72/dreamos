@@ -1,0 +1,11 @@
+xserver-xorg
+xserver-xorg-input-libinput
+xinit
+x11-xserver-utils
+openbox
+lightdm
+lightdm-gtk-greeter
+tint2
+lxterminal
+pcmanfm
+feh

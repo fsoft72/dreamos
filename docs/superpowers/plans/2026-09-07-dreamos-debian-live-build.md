@@ -457,16 +457,33 @@ calamares-settings-debian
 
 - [ ] **Step 5: Verify every listed package exists in the trixie archive**
 
-Run:
+The base `debian:trixie` image only has `main`, so the check must enable
+all four archive areas first (matching `--archive-areas` in `auto/config`).
+Save this as `scripts/check-packages.sh` on the host is not needed; run it
+inline via a heredoc into the container:
+
 ```bash
-docker run --rm -v "$PWD:/build" -w /build dreamos-lb sh -c '
-  set -e
-  apt-get update >/dev/null
-  for p in $(cat config/package-lists/*.list.chroot); do
-    apt-cache show "$p" >/dev/null 2>&1 && echo "ok   $p" || echo "MISSING $p"
-  done'
+docker run --rm -v "$PWD:/build" -w /build dreamos-lb bash -s <<'EOF'
+set -e
+cat > /etc/apt/sources.list.d/areas.sources <<'SRC'
+Types: deb
+URIs: http://deb.debian.org/debian
+Suites: trixie trixie-updates
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+SRC
+apt-get update >/dev/null 2>&1
+for p in $(cat config/package-lists/*.list.chroot); do
+  apt-cache show "$p" >/dev/null 2>&1 && echo "ok      $p" || echo "MISSING $p"
+done
+EOF
 ```
-Expected: every line starts with `ok`. If any `MISSING`, stop and resolve the name before continuing (e.g. `firmware-linux` may be `firmware-linux-free` + `firmware-linux-nonfree`; adjust and re-run).
+
+Expected: every line starts with `ok` (a generated `live.list.chroot`
+from a prior `lb config` may also be globbed in - that is fine).
+`firmware-linux` and `firmware-iwlwifi` live in `non-free-firmware` and
+resolve once the areas are enabled. If any real `MISSING` appears, fix
+the name before continuing.
 
 - [ ] **Step 6: Update `CHANGES.md`**
 

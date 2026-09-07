@@ -7,3 +7,5 @@
 - Task 3: `auto/config` (full `lb config` option set) and `auto/clean` at
   the project root; `.gitignore` rewritten for the real live-build
   `config/` layout (`auto/` is a sibling of the generated `config/` tree).
+- Task 4: chroot package lists (desktop, network, system, installer); all
+  packages verified present in the trixie archive.
