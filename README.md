@@ -30,15 +30,26 @@ in the project root.
 ## Boot test
 
 ```sh
+./start.sh            # BIOS legacy (default)
+./start.sh --uefi     # UEFI via OVMF
+./start.sh --help     # all options (--iso, --mem, extra qemu args after --)
+```
+
+`start.sh` enables KVM when `/dev/kvm` is available and keeps a
+per-project UEFI NVRAM file (`.ovmf-vars.fd`, gitignored).
+
+Raw commands, if you prefer:
+
+```sh
 # BIOS legacy
 qemu-system-x86_64 -m 2048 -cdrom dreamos-amd64.hybrid.iso
 
-# UEFI (OVMF path varies by distro; Debian/Ubuntu ship OVMF_CODE_4M.fd)
+# UEFI (Debian/Ubuntu ship OVMF_CODE_4M.fd)
+cp /usr/share/OVMF/OVMF_VARS_4M.fd /tmp/ovmf_vars.fd
 qemu-system-x86_64 -m 2048 \
     -drive if=pflash,format=raw,unit=0,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
     -drive if=pflash,format=raw,unit=1,file=/tmp/ovmf_vars.fd \
     -cdrom dreamos-amd64.hybrid.iso
-# (copy /usr/share/OVMF/OVMF_VARS_4M.fd to /tmp/ovmf_vars.fd first)
 ```
 
 Both bootloaders (isolinux for BIOS, GRUB for UEFI) wait for a keypress

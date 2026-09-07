@@ -40,3 +40,5 @@
   Manual verification still pending: Openbox right-click menu popping
   (QEMU synthetic right-click does not register), Calamares install,
   keyboard toggle, USB persistence.
+- `start.sh`: interactive QEMU launcher (`--bios`/`--uefi`, `--iso`,
+  `--mem`, KVM auto-detect, persistent per-project UEFI NVRAM).

@@ -42,6 +42,9 @@ live-image-*.packages
 !/config/package-lists/system.list.chroot
 !/config/package-lists/installer.list.chroot
 
+# start.sh UEFI NVRAM
+.ovmf-vars.fd
+
 # editor noise
 *~
 .DS_Store
