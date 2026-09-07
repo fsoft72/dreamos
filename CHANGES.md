@@ -40,6 +40,11 @@
   Manual verification still pending: Openbox right-click menu popping
   (QEMU synthetic right-click does not register), Calamares install,
   keyboard toggle, USB persistence.
+- `config/includes.chroot/etc/X11/xorg.conf.d/20-resolution.conf`: force
+  the `modesetting` driver with a 1920x1080 modeline (+ `AllowNonEdidModes`
+  and 1600x900 / 1366x768 / 1280x800 fallbacks). Without it Xorg came up
+  at the 720x400 VGA console size under QEMU/GTK (headless was fine).
+  Verified: guest scanout is now 1920x1080 with `-display gtk`.
 - `start.sh`: interactive QEMU launcher (`--bios`/`--uefi`, `--iso`,
   `--mem`, `--res`, `--fit`, `--fullscreen`, KVM auto-detect, persistent
   per-project UEFI NVRAM). Default guest resolution 1920x1080 via a
