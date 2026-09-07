@@ -14,3 +14,6 @@
 - Task 6: chroot hooks - locale/keyboard/timezone (0100), Openbox 2-desktop
   default (0150), Calamares launcher + `user` in `sudo` (0200), image
   cleanup (0300).
+- Task 7: host wrappers `build.sh` and `clean.sh` (privileged container,
+  chown artifacts back to the caller on exit) and `tests/verify-iso.sh`
+  (checks ISO type + BIOS/UEFI El Torito entries).
