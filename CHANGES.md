@@ -9,3 +9,5 @@
   `config/` layout (`auto/` is a sibling of the generated `config/` tree).
 - Task 4: chroot package lists (desktop, network, system, installer); all
   packages verified present in the trixie archive.
+- Task 5: Openbox autostart/menu, LightDM autologin drop-in, tint2 bottom
+  panel in `/etc/skel`, and a 2x2 placeholder wallpaper.

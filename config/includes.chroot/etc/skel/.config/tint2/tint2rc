@@ -1,0 +1,16 @@
+# dreamos minimal bottom panel
+panel_items = TSC
+panel_size = 100% 30
+panel_position = bottom center horizontal
+panel_background_id = 1
+taskbar_mode = single_desktop
+task_text = 1
+task_maximum_size = 200 30
+time1_format = %H:%M
+time2_format = %a %d %b
+systray_padding = 4 2 4
+systray_icon_size = 20
+
+rounded = 0
+border_width = 0
+background_color = #1e2430 100

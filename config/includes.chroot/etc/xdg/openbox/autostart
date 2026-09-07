@@ -1,0 +1,4 @@
+# dreamos Openbox session autostart
+feh --bg-fill /usr/share/backgrounds/dreamos.png &
+tint2 &
+nm-applet &
