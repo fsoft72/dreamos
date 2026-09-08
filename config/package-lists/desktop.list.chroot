@@ -5,7 +5,6 @@ xserver-xorg-input-libinput
 xinit
 x11-xserver-utils
 openbox
-openbox-themes
 lightdm
 lightdm-gtk-greeter
 lxterminal

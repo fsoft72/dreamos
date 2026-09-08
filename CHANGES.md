@@ -21,9 +21,9 @@
   (build artifacts).
 - `config/package-lists/desktop.list.chroot`: dropped `tint2`,
   `pcmanfm`, `feh`; added `libgtk-4-1`, `librsvg2-common` (SVG icon
-  loader), `adwaita-icon-theme`, `gnome-themes-extra`,
-  `dbus-user-session`, and `openbox-themes` (the shipped `rc.xml` uses
-  the `Onyx` theme).
+  loader), `adwaita-icon-theme`, `gnome-themes-extra`, and
+  `dbus-user-session`. The `Onyx` Openbox theme used by the shipped
+  `rc.xml` is already in the base `openbox` package.
 - `config/includes.chroot/etc/xdg/openbox/autostart`: launch only
   `opusdm-hub &` (no more `feh` / `tint2` / `nm-applet`).
 - `config/includes.chroot/etc/skel/.xinitrc`: wrap the session in
