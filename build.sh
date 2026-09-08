@@ -12,6 +12,17 @@ HOST_GID="$(id -g)"
 
 cd "${PROJECT_DIR}"
 
+# opusdm-hub / opusdm-lister are the live desktop shell. They are built in
+# a separate trixie container (the host toolchain links the wrong glibc),
+# so they must be staged before the ISO build runs.
+for _bin in opusdm-hub opusdm-lister; do
+    if [ ! -x "config/includes.chroot/usr/bin/${_bin}" ]; then
+        echo "ERROR: config/includes.chroot/usr/bin/${_bin} is missing." >&2
+        echo "       Run ./scripts/build-opusdm.sh first." >&2
+        exit 1
+    fi
+done
+
 echo "==> Building Docker image ${IMAGE_TAG}"
 docker build -t "${IMAGE_TAG}" "${PROJECT_DIR}"
 

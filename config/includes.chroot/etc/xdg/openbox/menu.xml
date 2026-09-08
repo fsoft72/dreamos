@@ -4,8 +4,8 @@
     <item label="Terminal">
       <action name="Execute"><command>lxterminal</command></action>
     </item>
-    <item label="File Manager">
-      <action name="Execute"><command>pcmanfm</command></action>
+    <item label="OpusDM">
+      <action name="Execute"><command>opusdm-hub</command></action>
     </item>
     <separator/>
     <item label="Install dreamos">

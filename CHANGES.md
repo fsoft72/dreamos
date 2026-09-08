@@ -1,5 +1,41 @@
 # Changelog
 
+## 0.2.0 - 2026-09-08
+
+- OpusDM is now the live desktop. Openbox stays the window manager;
+  `opusdm-hub` runs as the shell (full-screen keep-below desktop window
+  with its own toolbar, spawns `opusdm-lister` from the same directory
+  and opens the first window on `$HOME`).
+- `scripts/Dockerfile.opusdm` + `scripts/build-opusdm.sh`: compile
+  `opusdm-hub` and `opusdm-lister` in a `debian:trixie` container and
+  stage them into `config/includes.chroot/usr/bin/`. Built in trixie
+  because the Ubuntu host glibc (2.42) is newer than the ISO's (2.41)
+  and host binaries will not start on the live system. The source is
+  mounted read-only and copied inside the container; only the binaries
+  and the crates.io registry cache (`cache/opusdm-cargo-registry/`) are
+  written back. rustup provides the toolchain (workspace MSRV 1.91 is
+  newer than trixie's packaged rustc).
+- `build.sh`: refuses to run until both OpusDM binaries are staged, with
+  a hint to run `scripts/build-opusdm.sh` first.
+- `.gitignore`: ignore the staged `opusdm-hub` / `opusdm-lister`
+  (build artifacts).
+- `config/package-lists/desktop.list.chroot`: dropped `tint2`,
+  `pcmanfm`, `feh`; added `libgtk-4-1`, `librsvg2-common` (SVG icon
+  loader), `adwaita-icon-theme`, `gnome-themes-extra`,
+  `dbus-user-session`, and `openbox-themes` (the shipped `rc.xml` uses
+  the `Onyx` theme).
+- `config/includes.chroot/etc/xdg/openbox/autostart`: launch only
+  `opusdm-hub &` (no more `feh` / `tint2` / `nm-applet`).
+- `config/includes.chroot/etc/skel/.xinitrc`: wrap the session in
+  `dbus-run-session` so GTK4 / OpusDM get a session bus.
+- `config/includes.chroot/etc/xdg/openbox/rc.xml`: ship OpusDM's Openbox
+  config (Onyx theme, Ctrl+wheel desktop switch, 4 virtual desktops).
+- `config/includes.chroot/etc/xdg/openbox/menu.xml`: replaced the
+  "File Manager" (`pcmanfm`) entry with "OpusDM" (`opusdm-hub`).
+- Removed `config/hooks/normal/0150-openbox-desktops.hook.chroot`: it
+  rewrote the packaged `rc.xml`'s desktop count, now moot since we ship
+  our own `rc.xml`.
+
 ## 0.1.0 - 2026-09-07
 
 - Task 1: project scaffold (`.gitignore`, `README.md`, `CHANGES.md`).

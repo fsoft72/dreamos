@@ -1,0 +1,27 @@
+# Build image for the OpusDM binaries shipped on the dreamos live ISO.
+#
+# It must be Debian trixie: the binaries are dynamically linked against
+# glibc and GTK4, and the Ubuntu host toolchain (glibc 2.42) produces
+# binaries that refuse to start on the trixie ISO (glibc 2.41).
+FROM debian:trixie
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG=C.UTF-8
+
+RUN apt-get update && apt-get install --no-install-recommends -y \
+        build-essential \
+        pkg-config \
+        libgtk-4-dev \
+        curl \
+        ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# The OpusDM workspace sets rust-version = "1.91", newer than trixie's
+# packaged rustc, so install the toolchain with rustup instead.
+ENV RUSTUP_HOME=/opt/rustup \
+    CARGO_HOME=/opt/cargo \
+    PATH=/opt/cargo/bin:$PATH
+RUN curl -fsSL https://sh.rustup.rs \
+        | sh -s -- -y --profile minimal --default-toolchain stable
+
+WORKDIR /work

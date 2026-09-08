@@ -5,9 +5,12 @@ xserver-xorg-input-libinput
 xinit
 x11-xserver-utils
 openbox
+openbox-themes
 lightdm
 lightdm-gtk-greeter
-tint2
 lxterminal
-pcmanfm
-feh
+dbus-user-session
+libgtk-4-1
+librsvg2-common
+adwaita-icon-theme
+gnome-themes-extra

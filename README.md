@@ -1,24 +1,35 @@
 # dreamos
 
-A Debian 13 "trixie" live ISO with a minimal Openbox desktop, built with
-Debian `live-build` inside a Docker container.
+A Debian 13 "trixie" live ISO whose desktop is OpusDM (`opusdm-hub` +
+`opusdm-lister`) running on Openbox, built with Debian `live-build`
+inside a Docker container.
 
 ## Requirements (host)
 
 - Docker
 - ~15 GB free disk, working internet connection
+- The OpusDM sources (default path `/home/fabio/dev/projects/opusdm`,
+  override with `OPUSDM_SRC`)
 - For boot testing: `qemu-system-x86` and `ovmf`
 
 ## Build
 
 ```sh
+./scripts/build-opusdm.sh   # once, and again whenever OpusDM changes
 ./build.sh
 ```
 
-The first run builds the `dreamos-lb` Docker image, then runs `lb build`
-inside a `--privileged` container. Downloaded packages are cached under
-`cache/` and reused by later builds. Output: `dreamos-amd64.hybrid.iso`
-in the project root.
+`scripts/build-opusdm.sh` compiles `opusdm-hub` and `opusdm-lister` in a
+throwaway `debian:trixie` container and stages them into
+`config/includes.chroot/usr/bin/`. It must run before `./build.sh`,
+which refuses to start without those binaries. They are built in trixie
+(not on the host) because the Ubuntu host glibc is newer than the ISO's
+and host builds will not start on the live system.
+
+`./build.sh` builds the `dreamos-lb` Docker image on first run, then runs
+`lb build` inside a `--privileged` container. Downloaded packages are
+cached under `cache/` and reused by later builds. Output:
+`dreamos-amd64.hybrid.iso` in the project root.
 
 ## Clean
 
@@ -70,8 +81,14 @@ Automated sanity checks:
 
 ## Live system
 
-- Auto-login as `user` (group `sudo`) into Openbox via LightDM.
-- Right-click the desktop for the menu.
+- Auto-login as `user` (group `sudo`) on tty1 -> `startx` ->
+  `dbus-run-session openbox-session`.
+- Openbox `autostart` launches `opusdm-hub`, the desktop shell: it draws
+  the background and desktop icons, shows its toolbar, and opens the
+  first Lister window on `$HOME`. There is no separate panel or wallpaper
+  setter.
+- Right-click the desktop for the Openbox menu (Terminal, OpusDM,
+  Install dreamos, session actions).
 - Default locale `it_IT.UTF-8`; `en_US.UTF-8` also available.
 - Keyboard `it,us`, switch with Alt+Shift.
 - Timezone `Europe/Rome`.

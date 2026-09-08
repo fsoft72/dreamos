@@ -1,5 +1,7 @@
-# dreamos Openbox session autostart
-feh --bg-fill /usr/share/backgrounds/dreamos.png &
-tint2 &
-# Give tint2 a moment to create its systray before nm-applet docks into it.
-(sleep 2 && nm-applet) &
+# dreamos Openbox session autostart - OpusDM desktop shell.
+#
+# opusdm-hub is the desktop: a full-screen keep-below window that draws
+# the background and desktop icons, plus its own toolbar. It also finds
+# opusdm-lister next to itself (/usr/bin) and opens the first Lister
+# window on $HOME. No separate panel or wallpaper setter is needed.
+opusdm-hub &
