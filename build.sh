@@ -7,6 +7,8 @@ IMAGE_TAG="dreamos-lb"
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LB_OUTPUT="live-image-amd64.hybrid.iso"
 FINAL_ISO="dreamos-amd64.hybrid.iso"
+BIN_DIR="config/includes.chroot/usr/bin"
+OPUSDM_TARBALL="vendor/opusdm/opusdm-bin.tar.gz"
 HOST_UID="$(id -u)"
 HOST_GID="$(id -g)"
 
@@ -14,11 +16,23 @@ cd "${PROJECT_DIR}"
 
 # opusdm-hub / opusdm-lister are the live desktop shell. They are built in
 # a separate trixie container (the host toolchain links the wrong glibc),
-# so they must be staged before the ISO build runs.
+# so they must be staged before the ISO build runs. On a machine with the
+# OpusDM sources that is scripts/build-opusdm.sh; without them (a fresh
+# checkout, CI) unpack the tracked tarball it leaves behind.
+if [ ! -x "${BIN_DIR}/opusdm-hub" ] || [ ! -x "${BIN_DIR}/opusdm-lister" ]; then
+    if [ -f "${OPUSDM_TARBALL}" ]; then
+        echo "==> Unpacking ${OPUSDM_TARBALL}"
+        mkdir -p "${BIN_DIR}"
+        tar -xzf "${OPUSDM_TARBALL}" -C "${BIN_DIR}" opusdm-hub opusdm-lister
+        chmod 755 "${BIN_DIR}/opusdm-hub" "${BIN_DIR}/opusdm-lister"
+    fi
+fi
+
 for _bin in opusdm-hub opusdm-lister; do
-    if [ ! -x "config/includes.chroot/usr/bin/${_bin}" ]; then
-        echo "ERROR: config/includes.chroot/usr/bin/${_bin} is missing." >&2
-        echo "       Run ./scripts/build-opusdm.sh first." >&2
+    if [ ! -x "${BIN_DIR}/${_bin}" ]; then
+        echo "ERROR: ${BIN_DIR}/${_bin} is missing." >&2
+        echo "       Run ./scripts/build-opusdm.sh first (it also writes" >&2
+        echo "       ${OPUSDM_TARBALL})." >&2
         exit 1
     fi
 done

@@ -1,0 +1,66 @@
+name: Build ISO
+
+# Builds the dreamos live ISO and publishes it as the rolling
+# "live-latest" prerelease. Runs only on pushes to the `live` branch
+# (cut one with scripts/release-to-live.sh) and on manual dispatch.
+on:
+  push:
+    branches: [live]
+  workflow_dispatch:
+
+# Never run two ISO builds at once; let a running build finish rather
+# than cancelling it (a full lb build is expensive).
+concurrency:
+  group: build-iso
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Free up disk space
+        # A stock runner has ~14 GB free on /; a full lb build needs ~15.
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: false
+          swap-storage: true
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache live-build package downloads
+        uses: actions/cache@v4
+        with:
+          path: cache
+          key: live-build-cache-${{ hashFiles('auto/config', 'config/package-lists/*') }}
+          restore-keys: |
+            live-build-cache-
+
+      - name: Build ISO
+        # build.sh unpacks vendor/opusdm/opusdm-bin.tar.gz (committed on
+        # the live branch), builds the dreamos-lb image and runs lb build
+        # in a privileged container. Output: dreamos-amd64.hybrid.iso.
+        run: ./build.sh
+
+      - name: Publish rolling release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: live-latest
+          name: DreamOS live (rolling)
+          prerelease: true
+          fail_on_unmatched_files: true
+          files: dreamos-amd64.hybrid.iso
+          body: |
+            Automated build from the `live` branch.
+
+            - Commit: ${{ github.sha }}
+            - Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

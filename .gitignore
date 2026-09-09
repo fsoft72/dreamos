@@ -48,6 +48,11 @@ live-image-*.packages
 /config/includes.chroot/usr/bin/opusdm-hub
 /config/includes.chroot/usr/bin/opusdm-lister
 
+# The compiled OpusDM binaries do travel in git as this one tracked
+# tarball (scripts/build-opusdm.sh writes it, build.sh unpacks it), so
+# the GitHub Actions ISO build does not need the private OpusDM repo.
+!/vendor/opusdm/opusdm-bin.tar.gz
+
 # start.sh UEFI NVRAM
 .ovmf-vars.fd
 

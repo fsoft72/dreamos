@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.2.1 - 2026-09-09
+
+- `.github/workflows/build-iso.yml`: GitHub Actions build. On a push to
+  the `live` branch (or manual dispatch) it frees runner disk space,
+  runs `./build.sh`, and publishes `dreamos-amd64.hybrid.iso` as the
+  rolling `live-latest` prerelease. A `concurrency` group serialises
+  builds; `cache/` (live-build package downloads) is cached between runs.
+- `scripts/build-opusdm.sh`: after staging the binaries it now also
+  writes `vendor/opusdm/opusdm-bin.tar.gz` (the two binaries plus a
+  `MANIFEST` naming the OpusDM revision). The archive is reproducible
+  (fixed entry order, owner, mtime; `gzip -n`) so an unchanged build
+  leaves no git diff.
+- `build.sh`: when the loose `opusdm-hub` / `opusdm-lister` are absent
+  (fresh checkout, CI) it unpacks `vendor/opusdm/opusdm-bin.tar.gz`
+  before building, so the ISO build never needs the private OpusDM repo.
+- `.gitignore`: track `vendor/opusdm/opusdm-bin.tar.gz` (the loose
+  binaries under `config/includes.chroot/` stay ignored).
+- `scripts/release-to-live.sh`: rebuild OpusDM, commit the refreshed
+  tarball if it changed, merge the source branch into `live` and push,
+  triggering the ISO workflow.
+
 ## 0.2.0 - 2026-09-08
 
 - OpusDM is now the live desktop. Openbox stays the window manager;

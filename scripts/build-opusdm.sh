@@ -6,6 +6,11 @@
 # shell, so run this once before ./build.sh and again whenever the
 # OpusDM sources change.
 #
+# It also refreshes vendor/opusdm/opusdm-bin.tar.gz, the tracked artifact
+# that carries the binaries to environments without the OpusDM sources
+# (a fresh checkout, the GitHub Actions ISO build). build.sh unpacks it
+# when the loose binaries are absent.
+#
 # The Ubuntu host toolchain is never used: its glibc (2.42) is newer than
 # trixie's (2.41), so host-built binaries fail to start on the ISO.
 #
@@ -20,6 +25,7 @@ OPUSDM_SRC="${OPUSDM_SRC:-/home/fabio/dev/projects/opusdm}"
 DEST_DIR="${PROJECT_DIR}/config/includes.chroot/usr/bin"
 STAGE_DIR="${PROJECT_DIR}/.build/opusdm-bin"
 REGISTRY_CACHE="${PROJECT_DIR}/cache/opusdm-cargo-registry"
+TARBALL="${PROJECT_DIR}/vendor/opusdm/opusdm-bin.tar.gz"
 HOST_UID="$(id -u)"
 HOST_GID="$(id -g)"
 
@@ -63,5 +69,24 @@ echo "==> Installing binaries into ${DEST_DIR#"${PROJECT_DIR}"/}"
 install -Dm755 "${STAGE_DIR}/opusdm-hub" "${DEST_DIR}/opusdm-hub"
 install -Dm755 "${STAGE_DIR}/opusdm-lister" "${DEST_DIR}/opusdm-lister"
 
+echo "==> Refreshing ${TARBALL#"${PROJECT_DIR}"/}"
+# Record which OpusDM revision produced these binaries, when the source
+# tree is a git checkout.
+_opusdm_ref="unknown"
+if git -C "${OPUSDM_SRC}" rev-parse --git-dir >/dev/null 2>&1; then
+    _opusdm_ref="$(git -C "${OPUSDM_SRC}" describe --always --dirty --tags 2>/dev/null \
+        || git -C "${OPUSDM_SRC}" rev-parse --short HEAD)"
+fi
+printf 'opusdm-hub, opusdm-lister\nopusdm-ref: %s\n' "${_opusdm_ref}" \
+    > "${STAGE_DIR}/MANIFEST"
+chmod 755 "${STAGE_DIR}/opusdm-hub" "${STAGE_DIR}/opusdm-lister"
+mkdir -p "$(dirname "${TARBALL}")"
+# Reproducible archive: fixed entry order, owner and mtime, and gzip
+# without a name/timestamp header, so an unchanged build produces a
+# byte-identical tarball and no noisy git diff.
+tar --sort=name --owner=0 --group=0 --numeric-owner --mtime='@0' \
+    -cf - -C "${STAGE_DIR}" opusdm-hub opusdm-lister MANIFEST \
+    | gzip -n -9 > "${TARBALL}"
+
 echo "==> Done:"
-ls -la "${DEST_DIR}/opusdm-hub" "${DEST_DIR}/opusdm-lister"
+ls -la "${DEST_DIR}/opusdm-hub" "${DEST_DIR}/opusdm-lister" "${TARBALL}"
