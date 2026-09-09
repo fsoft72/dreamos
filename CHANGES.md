@@ -20,6 +20,16 @@
 - `scripts/release-to-live.sh`: rebuild OpusDM, commit the refreshed
   tarball if it changed, merge the source branch into `live` and push,
   triggering the ISO workflow.
+- `scripts/test-chroot.sh`: enter or boot the already-built `chroot/` in
+  a `systemd-nspawn` container without repacking the ISO. `--boot` boots
+  systemd inside it, `-- <cmd>` runs one command; default is a root
+  shell. Checks the package set, locale / keyboard / timezone config,
+  the Openbox dotfiles and the OpusDM binaries.
+- `scripts/test-desktop.sh`: run the desktop (Openbox + `opusdm-hub`)
+  from `chroot/` inside a nested `Xephyr` server, again without an ISO
+  rebuild. Creates the live `user` in the tree if missing and starts the
+  session exactly like `/etc/skel/.xinitrc`. `--res WxH` and
+  `--display :N` are configurable.
 
 ## 0.2.0 - 2026-09-08
 

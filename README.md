@@ -38,6 +38,27 @@ cached under `cache/` and reused by later builds. Output:
 ./clean.sh --all    # also remove cache/ and the ISO
 ```
 
+## Test without rebuilding the ISO
+
+Once `./build.sh` has produced the `chroot/` tree at least once, most
+changes can be checked against it directly, without repacking the ISO:
+
+```sh
+sudo ./scripts/test-chroot.sh          # root shell in the live rootfs
+sudo ./scripts/test-chroot.sh --boot   # boot systemd inside it (poweroff to exit)
+sudo ./scripts/test-chroot.sh -- ldd /usr/bin/opusdm-hub
+
+./scripts/test-desktop.sh              # Openbox + opusdm-hub in a nested Xephyr window
+./scripts/test-desktop.sh --res 1920x1080
+```
+
+`test-chroot.sh` uses `systemd-nspawn` and is good for the package set,
+locale / keyboard / timezone config and the OpusDM binaries; the
+auto-login `user` is created only on a real boot, so it runs as root.
+`test-desktop.sh` starts the graphical session the same way
+`/etc/skel/.xinitrc` does, creating the `user` account in the tree if
+missing. Needs `systemd-container` and `xserver-xephyr`.
+
 ## Boot test
 
 ```sh
