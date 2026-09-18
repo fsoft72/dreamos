@@ -45,8 +45,9 @@ live-image-*.packages
 
 # OpusDM binaries: staged by scripts/build-opusdm.sh into the ISO tree.
 # They are build artifacts (trixie container output), never committed.
-/config/includes.chroot/usr/bin/opusdm-hub
-/config/includes.chroot/usr/bin/opusdm-lister
+# The whole directory is ignored so any workspace [[bin]] target the script
+# picks up automatically stays untracked too, with no edits needed here.
+/config/includes.chroot/usr/bin/*
 
 # The compiled OpusDM binaries do travel in git as this one tracked
 # tarball (scripts/build-opusdm.sh writes it, build.sh unpacks it), so
