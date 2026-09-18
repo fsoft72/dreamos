@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
         build-essential \
         pkg-config \
         libgtk-4-dev \
+        libvte-2.91-gtk4-dev \
         curl \
         ca-certificates \
     && rm -rf /var/lib/apt/lists/*
