@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased - 2026-09-18
+
+- Fix: the live ISO stopped at the tty1 shell instead of starting X. An
+  empty, untracked `config/includes.chroot/home/user/.local/share/fonts`
+  was copied into the rootfs as a root-owned `/home/user`; live-config's
+  adduser then skipped `/etc/skel`, so `.bash_profile` (which runs
+  `startx`) and `.xinitrc` never reached the live user. The directory is
+  removed and `build.sh` now refuses to build while
+  `config/includes.chroot/home` exists.
+
 ## 0.2.1 - 2026-09-09
 
 - `.github/workflows/build-iso.yml`: GitHub Actions build. On a push to

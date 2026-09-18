@@ -37,6 +37,18 @@ for _bin in opusdm-hub opusdm-lister; do
     fi
 done
 
+# Nothing may be staged under /home in the rootfs. live-config creates the
+# live 'user' at boot; if /home/user already exists (even as an empty,
+# root-owned dir that git does not track), adduser skips /etc/skel, so
+# .bash_profile and .xinitrc are never copied and the boot stops at the
+# tty1 shell instead of starting X.
+if [ -e "config/includes.chroot/home" ]; then
+    echo "ERROR: config/includes.chroot/home exists; the live user's home" >&2
+    echo "       must be created from /etc/skel at boot. Remove it:" >&2
+    find config/includes.chroot/home >&2
+    exit 1
+fi
+
 echo "==> Building Docker image ${IMAGE_TAG}"
 docker build -t "${IMAGE_TAG}" "${PROJECT_DIR}"
 
