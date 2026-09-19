@@ -66,8 +66,15 @@ if [ -e "config/includes.chroot/home" ]; then
     exit 1
 fi
 
-echo "==> Building Docker image ${IMAGE_TAG}"
-docker build -t "${IMAGE_TAG}" "${PROJECT_DIR}"
+# In fast mode, skip the image build entirely if it already exists: the
+# Dockerfile only installs packages, so there is nothing to gain re-checking
+# it on every iteration cycle.
+if [ "${FAST}" = "true" ] && docker image inspect "${IMAGE_TAG}" >/dev/null 2>&1; then
+    echo "==> Reusing existing Docker image ${IMAGE_TAG}"
+else
+    echo "==> Building Docker image ${IMAGE_TAG}"
+    docker build -t "${IMAGE_TAG}" "${PROJECT_DIR}"
+fi
 
 # live-build needs root inside the container for debootstrap and chroot
 # mounts. It writes artifacts into the bind mount as root, so hand
