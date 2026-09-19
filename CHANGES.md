@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- `build.sh`: add `--fast`. Skips `./auto/clean` and the full `lb build`
+  (debootstrap + package install), reusing the existing `chroot/` from a
+  prior full build: it force-recopies `config/includes.chroot` into it
+  (`lb chroot_includes_after_packages --force`), cleans only the binary
+  stage, and repacks. For iterating on `vendor/opusdm` binaries this cuts
+  a rebuild from "reinstall the whole chroot" to "recopy + resquash".
+  Falls back to a full build if `chroot/` does not exist yet.
+
 ## 0.2.1 - 2026-09-09
 
 - `.github/workflows/build-iso.yml`: GitHub Actions build. On a push to

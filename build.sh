@@ -1,7 +1,19 @@
 #!/usr/bin/env bash
 # Build the dreamos live ISO inside a Debian trixie container.
 # The Ubuntu host is never touched by live-build.
+#
+# Default: full clean + full lb build (debootstrap, package install, the
+# lot). Use --fast to iterate on config/includes.chroot (e.g. new opusdm
+# binaries) against an already-built chroot/: it force-recopies the
+# includes and only redoes the binary (squashfs+iso) stage, skipping
+# debootstrap and package installation entirely. Falls back to a full
+# build automatically if chroot/ does not exist yet.
 set -euo pipefail
+
+FAST="false"
+for _arg in "${@}"; do
+    [ "${_arg}" = "--fast" ] && FAST="true"
+done
 
 IMAGE_TAG="dreamos-lb"
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -37,26 +49,49 @@ for _bin in opusdm-hub opusdm-lister; do
     fi
 done
 
+if [ "${FAST}" = "true" ] && [ ! -d "${PROJECT_DIR}/chroot" ]; then
+    echo "==> --fast requested but no chroot/ yet; doing a full build first"
+    FAST="false"
+fi
+
 echo "==> Building Docker image ${IMAGE_TAG}"
 docker build -t "${IMAGE_TAG}" "${PROJECT_DIR}"
 
-echo "==> Running lb build (privileged container)"
 # live-build needs root inside the container for debootstrap and chroot
 # mounts. It writes artifacts into the bind mount as root, so hand
 # ownership back to the invoking user before exiting.
-docker run --rm --privileged \
-    -v "${PROJECT_DIR}:/build" \
-    -w /build \
-    -e "HOST_UID=${HOST_UID}" \
-    -e "HOST_GID=${HOST_GID}" \
-    "${IMAGE_TAG}" \
-    bash -c '
-        set -euo pipefail
-        trap "chown -R ${HOST_UID}:${HOST_GID} /build" EXIT
-        ./auto/clean || true
-        lb config
-        lb build
-    '
+if [ "${FAST}" = "true" ]; then
+    echo "==> Running fast rebuild: recopy includes + binary stage only (privileged container)"
+    docker run --rm --privileged \
+        -v "${PROJECT_DIR}:/build" \
+        -w /build \
+        -e "HOST_UID=${HOST_UID}" \
+        -e "HOST_GID=${HOST_GID}" \
+        "${IMAGE_TAG}" \
+        bash -c '
+            set -euo pipefail
+            trap "chown -R ${HOST_UID}:${HOST_GID} /build" EXIT
+            lb config
+            lb chroot_includes_after_packages --force
+            lb clean noauto --binary
+            lb build
+        '
+else
+    echo "==> Running lb build (privileged container)"
+    docker run --rm --privileged \
+        -v "${PROJECT_DIR}:/build" \
+        -w /build \
+        -e "HOST_UID=${HOST_UID}" \
+        -e "HOST_GID=${HOST_GID}" \
+        "${IMAGE_TAG}" \
+        bash -c '
+            set -euo pipefail
+            trap "chown -R ${HOST_UID}:${HOST_GID} /build" EXIT
+            ./auto/clean || true
+            lb config
+            lb build
+        '
+fi
 
 test -f "${PROJECT_DIR}/${LB_OUTPUT}" || {
     echo "ERROR: expected ${LB_OUTPUT} was not produced" >&2
