@@ -9,8 +9,12 @@
   cargo workspace, so crates are discovered by scanning for `Cargo.toml`
   files instead of `cargo metadata --workspace`. Refreshes a new
   `vendor/dreamos-tools/dreamos-tools-bin.tar.gz` tracked artifact,
-  mirroring the existing OpusDM one (nothing unpacks it yet; only
-  build-opusdm.sh writes it so far).
+  mirroring the existing OpusDM one.
+- `build.sh`: unpack `vendor/dreamos-tools/dreamos-tools-bin.tar.gz` when
+  filesys-extender/machine-score/nvidia-installer are missing from
+  `usr/bin/`, mirroring the OpusDM tarball handling. Unlike opusdm-hub/
+  opusdm-lister (the desktop shell, required), these are optional
+  utilities: a missing binary only warns, it does not fail the build.
 - `scripts/Dockerfile.opusdm`: add the X11/Wayland/GL dev headers
   (`libxkbcommon-dev`, `libwayland-dev`, `libx11-dev`, `libxrandr-dev`,
   `libxinerama-dev`, `libxcursor-dev`, `libxi-dev`, `libgl1-mesa-dev`)

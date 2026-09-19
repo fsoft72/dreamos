@@ -21,6 +21,7 @@ LB_OUTPUT="live-image-amd64.hybrid.iso"
 FINAL_ISO="dreamos-amd64.hybrid.iso"
 BIN_DIR="config/includes.chroot/usr/bin"
 OPUSDM_TARBALL="vendor/opusdm/opusdm-bin.tar.gz"
+TOOLS_TARBALL="vendor/dreamos-tools/dreamos-tools-bin.tar.gz"
 HOST_UID="$(id -u)"
 HOST_GID="$(id -g)"
 
@@ -46,6 +47,29 @@ for _bin in opusdm-hub opusdm-lister; do
         echo "       Run ./scripts/build-opusdm.sh first (it also writes" >&2
         echo "       ${OPUSDM_TARBALL})." >&2
         exit 1
+    fi
+done
+
+# Same deal for the dreamos-tools binaries (filesys-extender, machine-score,
+# nvidia-installer): built by scripts/build-opusdm.sh, staged as loose
+# files or unpacked here from its tracked tarball on a source-less checkout.
+_tools_bins=(filesys-extender machine-score nvidia-installer)
+_tools_missing="false"
+for _bin in "${_tools_bins[@]}"; do
+    [ -x "${BIN_DIR}/${_bin}" ] || _tools_missing="true"
+done
+if [ "${_tools_missing}" = "true" ] && [ -f "${TOOLS_TARBALL}" ]; then
+    echo "==> Unpacking ${TOOLS_TARBALL}"
+    mkdir -p "${BIN_DIR}"
+    tar -xzf "${TOOLS_TARBALL}" -C "${BIN_DIR}" "${_tools_bins[@]}"
+    chmod 755 "${_tools_bins[@]/#/${BIN_DIR}/}"
+fi
+
+for _bin in "${_tools_bins[@]}"; do
+    if [ ! -x "${BIN_DIR}/${_bin}" ]; then
+        echo "WARNING: ${BIN_DIR}/${_bin} is missing, ISO will ship without it." >&2
+        echo "         Run ./scripts/build-opusdm.sh first (it also writes" >&2
+        echo "         ${TOOLS_TARBALL}) to include it." >&2
     fi
 done
 
