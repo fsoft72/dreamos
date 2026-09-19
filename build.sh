@@ -73,6 +73,14 @@ docker build -t "${IMAGE_TAG}" "${PROJECT_DIR}"
 # mounts. It writes artifacts into the bind mount as root, so hand
 # ownership back to the invoking user before exiting.
 if [ "${FAST}" = "true" ]; then
+    cat <<'EOF'
+ ______              _     __  __  ___  ____  _____
+|  ____|/\    ____  | |   |  \/  |/ _ \|  _ \|  ___|
+| |__   /  \  / ___| | |   | \  / | | | | | | | |__
+|  __| / /\ \ \___ \ | |   | |\/| | | | | | | |  __|
+| |   / ____ \ ___) || |___| |  | | |_| | |_| | |___
+|_|  /_/    \_\____/ |_____|_|  |_|\___/|____/|_____|
+EOF
     echo "==> Running fast rebuild: recopy includes + binary stage only (privileged container)"
     docker run --rm --privileged \
         -v "${PROJECT_DIR}:/build" \
