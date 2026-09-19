@@ -12,5 +12,4 @@ dbus-user-session
 libgtk-4-1
 librsvg2-common
 adwaita-icon-theme
-gnome-themes-extra
 arandr
