@@ -49,9 +49,18 @@ for _bin in opusdm-hub opusdm-lister; do
     fi
 done
 
-if [ "${FAST}" = "true" ] && [ ! -d "${PROJECT_DIR}/chroot" ]; then
-    echo "==> --fast requested but no chroot/ yet; doing a full build first"
-    FAST="false"
+# A chroot/ dir alone does not mean a usable chroot: a prior interrupted or
+# partial full build can leave it without a kernel installed, which makes
+# the binary-only fast path fail deep inside lb build. Require a kernel to
+# be present too, else fall back to a full build.
+if [ "${FAST}" = "true" ]; then
+    if [ ! -d "${PROJECT_DIR}/chroot" ]; then
+        echo "==> --fast requested but no chroot/ yet; doing a full build first"
+        FAST="false"
+    elif ! compgen -G "${PROJECT_DIR}/chroot/boot/vmlinuz-*" >/dev/null; then
+        echo "==> --fast requested but chroot/ has no kernel installed; doing a full build first"
+        FAST="false"
+    fi
 fi
 
 # Nothing may be staged under /home in the rootfs. live-config creates the
