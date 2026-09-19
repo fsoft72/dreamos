@@ -9,6 +9,13 @@
   stage, and repacks. For iterating on `vendor/opusdm` binaries this cuts
   a rebuild from "reinstall the whole chroot" to "recopy + resquash".
   Falls back to a full build if `chroot/` does not exist yet.
+- Fix: the live ISO stopped at the tty1 shell instead of starting X. An
+  empty, untracked `config/includes.chroot/home/user/.local/share/fonts`
+  was copied into the rootfs as a root-owned `/home/user`; live-config's
+  adduser then skipped `/etc/skel`, so `.bash_profile` (which runs
+  `startx`) and `.xinitrc` never reached the live user. The directory is
+  removed and `build.sh` now refuses to build while
+  `config/includes.chroot/home` exists.
 
 ## 0.2.1 - 2026-09-09
 
