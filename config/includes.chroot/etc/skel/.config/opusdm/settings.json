@@ -1,0 +1,37 @@
+{
+  "theme": {
+    "icon_set": {
+      "Custom": "breeze-dark"
+    },
+    "colors": {
+      "source_bg": "#00a0c0",
+      "source_fg": "#000000",
+      "dest_bg": "#d8d8d8",
+      "dest_fg": "#000080",
+      "dir_bg": "#b4b4b4",
+      "dir_fg": "#000080",
+      "file_bg": "#b4b4b4",
+      "file_fg": "#000000",
+      "selected_bg": "#000080",
+      "selected_fg": "#ffffff"
+    },
+    "background": {
+      "mode": "image",
+      "solid": "#2e3436",
+      "gradient_start": "#241f31",
+      "gradient_end": "#3d3846",
+      "gradient_angle": 180,
+      "image_path": "/home/user/opusdm/backgrounds/dream01.jpg",
+      "image_fit": "fill"
+    }
+  },
+  "appearance": {
+    "type_indicators": false,
+    "monospace_list": true,
+    "theme_window": true
+  },
+  "behavior": {
+    "auto_refresh": true,
+    "auto_refresh_debounce_ms": 250
+  }
+}

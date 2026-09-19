@@ -16,25 +16,48 @@
 # The Ubuntu host toolchain is never used: its glibc (2.42) is newer than
 # trixie's (2.41), so host-built binaries fail to start on the ISO.
 #
+# It also stages the OpusDM user config (~/.config/opusdm, theme included)
+# and the desktop background into config/includes.chroot/etc/skel/, so the
+# live user gets them from first login (adduser seeds /home/user from
+# /etc/skel at boot, see build.sh). Absolute paths in settings.json that
+# point at the dev machine (e.g. the background image_path) are rewritten
+# to the live user's home.
+#
 # Usage:
 #   ./scripts/build-opusdm.sh
-#   OPUSDM_SRC=/path/to/opusdm ./scripts/build-opusdm.sh
+#   OPUSDM_SRC=/path/to/opusdm OPUSDM_CONFIG_SRC=/path/to/.config/opusdm ./scripts/build-opusdm.sh
 set -euo pipefail
 
 IMAGE_TAG="dreamos-opusdm"
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 OPUSDM_SRC="${OPUSDM_SRC:-/home/fabio/dev/projects/opusdm}"
+OPUSDM_CONFIG_SRC="${OPUSDM_CONFIG_SRC:-${HOME}/.config/opusdm}"
+BACKGROUND_SRC="${OPUSDM_SRC}/assets/backgrounds/dream01.jpg"
 DEST_DIR="${PROJECT_DIR}/config/includes.chroot/usr/bin"
 STAGE_DIR="${PROJECT_DIR}/.build/opusdm-bin"
 REGISTRY_CACHE="${PROJECT_DIR}/cache/opusdm-cargo-registry"
 TARBALL="${PROJECT_DIR}/vendor/opusdm/opusdm-bin.tar.gz"
+LIVE_USER="user"
+SKEL_DIR="${PROJECT_DIR}/config/includes.chroot/etc/skel"
+CONFIG_DEST="${SKEL_DIR}/.config/opusdm"
+BG_DEST="${SKEL_DIR}/opusdm/backgrounds/dream01.jpg"
+LIVE_BG_PATH="/home/${LIVE_USER}/opusdm/backgrounds/dream01.jpg"
 HOST_UID="$(id -u)"
 HOST_GID="$(id -g)"
 
 # Exit conditions up front
 command -v docker >/dev/null 2>&1 || { echo "docker not found" >&2; exit 1; }
+command -v jq >/dev/null 2>&1 || { echo "jq not found" >&2; exit 1; }
 test -f "${OPUSDM_SRC}/Cargo.toml" || {
     echo "OpusDM sources not found at ${OPUSDM_SRC} (set OPUSDM_SRC=...)" >&2
+    exit 1
+}
+test -d "${OPUSDM_CONFIG_SRC}" || {
+    echo "OpusDM config not found at ${OPUSDM_CONFIG_SRC} (set OPUSDM_CONFIG_SRC=...)" >&2
+    exit 1
+}
+test -f "${BACKGROUND_SRC}" || {
+    echo "Background image not found at ${BACKGROUND_SRC}" >&2
     exit 1
 }
 
@@ -90,6 +113,24 @@ for bin_name in "${bin_names[@]}"; do
     install -Dm755 "${STAGE_DIR}/${bin_name}" "${DEST_DIR}/${bin_name}"
 done
 
+echo "==> Staging OpusDM user config into ${CONFIG_DEST#"${PROJECT_DIR}"/}"
+rm -rf "${CONFIG_DEST}"
+mkdir -p "$(dirname "${CONFIG_DEST}")"
+cp -a "${OPUSDM_CONFIG_SRC}" "${CONFIG_DEST}"
+
+echo "==> Staging desktop background into ${BG_DEST#"${PROJECT_DIR}"/}"
+mkdir -p "$(dirname "${BG_DEST}")"
+cp "${BACKGROUND_SRC}" "${BG_DEST}"
+
+# The staged settings.json still points at the dev machine's absolute path;
+# rewrite it to where the background actually lands on the live system.
+_settings_json="${CONFIG_DEST}/settings.json"
+if [ -f "${_settings_json}" ]; then
+    jq --arg path "${LIVE_BG_PATH}" '.theme.background.image_path = $path' \
+        "${_settings_json}" > "${_settings_json}.tmp"
+    mv "${_settings_json}.tmp" "${_settings_json}"
+fi
+
 echo "==> Refreshing ${TARBALL#"${PROJECT_DIR}"/}"
 # Record which OpusDM revision produced these binaries, when the source
 # tree is a git checkout.
@@ -112,4 +153,4 @@ tar --sort=name --owner=0 --group=0 --numeric-owner --mtime='@0' \
     | gzip -n -9 > "${TARBALL}"
 
 echo "==> Done:"
-ls -la "${bin_names[@]/#/${DEST_DIR}/}" "${TARBALL}"
+ls -la "${bin_names[@]/#/${DEST_DIR}/}" "${TARBALL}" "${CONFIG_DEST}" "${BG_DEST}"
