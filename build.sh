@@ -10,9 +10,9 @@
 # build automatically if chroot/ does not exist yet.
 set -euo pipefail
 
-FAST="false"
+FAST="true"
 for _arg in "${@}"; do
-    [ "${_arg}" = "--fast" ] && FAST="true"
+    [ "${_arg}" = "--full" ] && FAST="false"
 done
 
 IMAGE_TAG="dreamos-lb"
