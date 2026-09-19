@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+- `scripts/build-opusdm.sh`: also build every standalone crate under
+  `~/dev/projects/dreamos-tools` (filesys-extender, machine-score,
+  nvidia-installer) in the same trixie container used for OpusDM, and
+  stage them into `config/includes.chroot/usr/bin/`. dreamos-tools has no
+  cargo workspace, so crates are discovered by scanning for `Cargo.toml`
+  files instead of `cargo metadata --workspace`. Refreshes a new
+  `vendor/dreamos-tools/dreamos-tools-bin.tar.gz` tracked artifact,
+  mirroring the existing OpusDM one (nothing unpacks it yet; only
+  build-opusdm.sh writes it so far).
+- `scripts/Dockerfile.opusdm`: add the X11/Wayland/GL dev headers
+  (`libxkbcommon-dev`, `libwayland-dev`, `libx11-dev`, `libxrandr-dev`,
+  `libxinerama-dev`, `libxcursor-dev`, `libxi-dev`, `libgl1-mesa-dev`)
+  that `machine-score` needs to build against (eframe/wgpu).
+- `config/package-lists/desktop.list.chroot`: add the matching runtime
+  libs (`libgl1`, `libegl1`, `libvulkan1`, `mesa-vulkan-drivers`,
+  `libxkbcommon0`) so `machine-score` actually runs on the live ISO -
+  only `libgtk-4-1`/`libvte-2.91-gtk4-0` were there before, covering the
+  GTK4 tools but not the wgpu/eframe one.
 - `config/package-lists/system.list.chroot`: add `mokutil` (Secure Boot
   MOK management).
 - `build.sh`: add `--fast`. Skips `./auto/clean` and the full `lb build`

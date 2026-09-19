@@ -11,6 +11,11 @@ lxterminal
 dbus-user-session
 libgtk-4-1
 libvte-2.91-gtk4-0
+libgl1
+libegl1
+libvulkan1
+mesa-vulkan-drivers
+libxkbcommon0
 librsvg2-common
 adwaita-icon-theme
 kf6-breeze-icon-theme

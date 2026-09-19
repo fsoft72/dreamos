@@ -13,6 +13,14 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
         pkg-config \
         libgtk-4-dev \
         libvte-2.91-gtk4-dev \
+        libxkbcommon-dev \
+        libwayland-dev \
+        libx11-dev \
+        libxrandr-dev \
+        libxinerama-dev \
+        libxcursor-dev \
+        libxi-dev \
+        libgl1-mesa-dev \
         curl \
         ca-certificates \
         jq \

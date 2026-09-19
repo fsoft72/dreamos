@@ -54,6 +54,10 @@ live-image-*.packages
 # the GitHub Actions ISO build does not need the private OpusDM repo.
 !/vendor/opusdm/opusdm-bin.tar.gz
 
+# Same for the compiled dreamos-tools binaries (scripts/build-opusdm.sh
+# writes this tarball too; nothing currently unpacks it, see the script).
+!/vendor/dreamos-tools/dreamos-tools-bin.tar.gz
+
 # start.sh UEFI NVRAM
 .ovmf-vars.fd
 
