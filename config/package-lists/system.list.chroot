@@ -7,3 +7,4 @@ live-config
 live-config-systemd
 user-setup
 live-tools
+mokutil

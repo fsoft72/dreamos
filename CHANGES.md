@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `config/package-lists/system.list.chroot`: add `mokutil` (Secure Boot
+  MOK management).
 - `build.sh`: add `--fast`. Skips `./auto/clean` and the full `lb build`
   (debootstrap + package install), reusing the existing `chroot/` from a
   prior full build: it force-recopies `config/includes.chroot` into it
