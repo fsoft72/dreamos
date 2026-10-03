@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Compositor: added `picom` to `desktop.list.chroot` and start it from
+  `/etc/xdg/openbox/autostart` (`picom --backend xrender --daemon`, before
+  `opusdm-hub`). Openbox is not a compositor, so until now the session had
+  none. The xrender backend needs no OpenGL and behaves the same on real
+  hardware and in VMs. The plan's "no compositor" constraint is updated
+  accordingly.
+- `start.sh`: virgl 3D acceleration on by default (`virtio-vga-gl` +
+  `-display gtk,...,gl=on`), so guest Mesa renders through the host GPU.
+  `--no-gl` falls back to plain `virtio-vga`; virgl is also turned off
+  when the caller passes its own `-display`/`-nographic`/`-spice`.
+
 - `scripts/Dockerfile.opusdm`: install `libssl-dev`, required by the
   `openssl-sys` dependency pulled in by the OpusDM workspace. Without it
   `scripts/build-opusdm.sh` failed and stopped before staging every OpusDM

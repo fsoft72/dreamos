@@ -2,7 +2,7 @@
 # Launch the dreamos live ISO in QEMU for interactive testing.
 #
 # Usage:
-#   ./start.sh [--uefi|--bios] [--iso PATH] [--mem MB] [--res WxH] [--fit|--fullscreen] [--] [extra qemu args]
+#   ./start.sh [--uefi|--bios] [--iso PATH] [--mem MB] [--res WxH] [--fit|--fullscreen] [--no-gl] [--] [extra qemu args]
 #
 #   --uefi        boot via OVMF (UEFI firmware)
 #   --bios        boot via SeaBIOS (legacy, default)
@@ -12,6 +12,8 @@
 #   --fit         scale the guest into the window instead of growing the
 #                 window to the guest size (for hosts smaller than --res)
 #   --fullscreen  open QEMU full screen
+#   --no-gl       disable virgl 3D acceleration (plain virtio-vga), for
+#                 hosts without a working OpenGL stack
 #
 # By default the QEMU window grows to the guest resolution once X starts.
 # Press Enter at the boot menu to start the live system.
@@ -26,6 +28,7 @@ ISO_PATH="${PROJECT_DIR}/dreamos-amd64.hybrid.iso"
 MEM_MB="3072"
 RESOLUTION="1920x1080"
 DISPLAY_MODE="grow"
+USE_GL="1"
 EXTRA_ARGS=()
 
 while [ "$#" -gt 0 ]; do
@@ -37,8 +40,9 @@ while [ "$#" -gt 0 ]; do
         --res) RESOLUTION="$2"; shift 2 ;;
         --fit) DISPLAY_MODE="fit"; shift ;;
         --fullscreen) DISPLAY_MODE="fullscreen"; shift ;;
+        --no-gl) USE_GL="0"; shift ;;
         --) shift; EXTRA_ARGS+=("$@"); break ;;
-        -h|--help) sed -n '2,16p' "${BASH_SOURCE[0]}" | sed 's/^#\s\{0,1\}//'; exit 0 ;;
+        -h|--help) sed -n '2,18p' "${BASH_SOURCE[0]}" | sed 's/^#\s\{0,1\}//'; exit 0 ;;
         *) EXTRA_ARGS+=("$1"); shift ;;
     esac
 done
@@ -63,25 +67,35 @@ QEMU_ARGS=(
     -cdrom "${ISO_PATH}"
     -boot d
     -device virtio-net,netdev=n0 -netdev user,id=n0
-    # virtio-gpu with an EDID advertising the requested mode as preferred,
-    # so the guest X server comes up at ${RESOLUTION} instead of 1024x768.
-    -device "virtio-vga,edid=on,xres=${XRES},yres=${YRES}"
     -usb -device usb-tablet
 )
 
 # Display: by default let the GTK window follow the guest resolution, so it
 # grows to ${RESOLUTION} once X starts. --fit scales instead; --fullscreen
-# goes full screen. Skipped entirely if the caller passes its own -display.
+# goes full screen. Skipped entirely if the caller passes its own -display;
+# virgl needs a GL-enabled display, so it is turned off in that case too.
 case " ${EXTRA_ARGS[*]-} " in
-    *" -display "*|*" -nographic "*|*" -spice "*) : ;;
+    *" -display "*|*" -nographic "*|*" -spice "*) DISPLAY_OPTS=""; USE_GL="0" ;;
     *)
         case "${DISPLAY_MODE}" in
-            fit)        QEMU_ARGS+=(-display gtk,zoom-to-fit=on) ;;
-            fullscreen) QEMU_ARGS+=(-display gtk,full-screen=on) ;;
-            *)          QEMU_ARGS+=(-display gtk,zoom-to-fit=off) ;;
+            fit)        DISPLAY_OPTS="gtk,zoom-to-fit=on" ;;
+            fullscreen) DISPLAY_OPTS="gtk,full-screen=on" ;;
+            *)          DISPLAY_OPTS="gtk,zoom-to-fit=off" ;;
         esac
         ;;
 esac
+
+# virtio-gpu with an EDID advertising the requested mode as preferred, so
+# the guest X server comes up at ${RESOLUTION} instead of 1024x768. The -gl
+# variant adds virgl 3D acceleration (guest Mesa renders through the host
+# GPU), which the guest compositor and GTK4 benefit from.
+GPU_DEVICE="virtio-vga"
+if [ "${USE_GL}" = "1" ]; then
+    GPU_DEVICE="virtio-vga-gl"
+    DISPLAY_OPTS="${DISPLAY_OPTS},gl=on"
+fi
+QEMU_ARGS+=(-device "${GPU_DEVICE},edid=on,xres=${XRES},yres=${YRES}")
+test -z "${DISPLAY_OPTS}" || QEMU_ARGS+=(-display "${DISPLAY_OPTS}")
 
 # Use hardware acceleration when the host exposes /dev/kvm.
 if [ -w /dev/kvm ]; then
@@ -106,5 +120,5 @@ if [ "${FIRMWARE}" = "uefi" ]; then
     )
 fi
 
-echo "==> Booting ${ISO_PATH##*/} (${FIRMWARE})"
+echo "==> Booting ${ISO_PATH##*/} (${FIRMWARE}, ${GPU_DEVICE})"
 exec qemu-system-x86_64 "${QEMU_ARGS[@]}" "${EXTRA_ARGS[@]}"

@@ -23,7 +23,7 @@
 - Live user: `user`, member of group `sudo`.
 - Locales generated: `it_IT.UTF-8` (system default) and `en_US.UTF-8`. Keyboard: `XKBLAYOUT="it,us"`, `XKBOPTIONS="grp:alt_shift_toggle"`.
 - Timezone: `Europe/Rome`.
-- No web browser in the package set. Keep the package set minimal: no compositor, no `lxappearance`, no power manager.
+- No web browser in the package set. Keep the package set minimal: no `lxappearance`, no power manager. The only compositor is `picom` (xrender backend), started from the Openbox autostart.
 - All shell scripts: `set -euo pipefail` for bash wrappers, `set -e` for POSIX `sh` live-build scripts. Exit conditions first, one-liners where possible.
 - All code and comments in English. Every script/file ends with a trailing newline.
 - Constants in shell scripts: `UPPER_CASE` with `_` separators.

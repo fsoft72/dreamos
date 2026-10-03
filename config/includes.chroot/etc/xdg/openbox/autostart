@@ -4,4 +4,10 @@
 # the background and desktop icons, plus its own toolbar. It also finds
 # opusdm-lister next to itself (/usr/bin) and opens the first Lister
 # window on $HOME. No separate panel or wallpaper setter is needed.
+#
+# picom is the X compositor (tear-free redraws, shadows, fades). It uses
+# the xrender backend: it needs no OpenGL, so it works the same on real
+# hardware, on virgl and on VMs without 3D acceleration. It starts before
+# opusdm-hub so the desktop windows are composited from the first frame.
+picom --backend xrender --daemon
 opusdm-hub &
