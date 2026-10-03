@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- `scripts/Dockerfile.opusdm`: install `libssl-dev`, required by the
+  `openssl-sys` dependency pulled in by the OpusDM workspace. Without it
+  `scripts/build-opusdm.sh` failed and stopped before staging every OpusDM
+  binary. The script now builds and stages all of them (`opusdm-hub`,
+  `opusdm-lister`, `opusdm-settings`, `opusdm-dock`, `xtask`).
+
 - `scripts/build-opusdm.sh`: also build every standalone crate under
   `~/dev/projects/dreamos-tools` (filesys-extender, machine-score,
   nvidia-installer) in the same trixie container used for OpusDM, and

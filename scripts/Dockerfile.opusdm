@@ -21,6 +21,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
         libxcursor-dev \
         libxi-dev \
         libgl1-mesa-dev \
+        libssl-dev \
+        libssl-dev \
         curl \
         ca-certificates \
         jq \
