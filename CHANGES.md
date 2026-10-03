@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- `start.sh`: the virgl GTK display now uses `gl=es` instead of `gl=on`.
+  With desktop GL the QEMU window stayed black (boot menu included) on an
+  X11 host with the proprietary NVIDIA driver; the OpenGL ES context
+  renders correctly and keeps the GTK options (`--fit`, `--fullscreen`).
+
 - Compositor: added `picom` to `desktop.list.chroot` and start it from
   `/etc/xdg/openbox/autostart` (`picom --backend xrender --daemon`, before
   `opusdm-hub`). Openbox is not a compositor, so until now the session had
@@ -9,7 +14,7 @@
   hardware and in VMs. The plan's "no compositor" constraint is updated
   accordingly.
 - `start.sh`: virgl 3D acceleration on by default (`virtio-vga-gl` +
-  `-display gtk,...,gl=on`), so guest Mesa renders through the host GPU.
+  `-display gtk,...,gl=es`), so guest Mesa renders through the host GPU.
   `--no-gl` falls back to plain `virtio-vga`; virgl is also turned off
   when the caller passes its own `-display`/`-nographic`/`-spice`.
 

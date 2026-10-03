@@ -88,11 +88,13 @@ esac
 # virtio-gpu with an EDID advertising the requested mode as preferred, so
 # the guest X server comes up at ${RESOLUTION} instead of 1024x768. The -gl
 # variant adds virgl 3D acceleration (guest Mesa renders through the host
-# GPU), which the guest compositor and GTK4 benefit from.
+# GPU), which the guest compositor and GTK4 benefit from. The GTK display
+# uses an OpenGL ES context: with gl=on (desktop GL) the window stays black
+# on X11 hosts with the proprietary NVIDIA driver.
 GPU_DEVICE="virtio-vga"
 if [ "${USE_GL}" = "1" ]; then
     GPU_DEVICE="virtio-vga-gl"
-    DISPLAY_OPTS="${DISPLAY_OPTS},gl=on"
+    DISPLAY_OPTS="${DISPLAY_OPTS},gl=es"
 fi
 QEMU_ARGS+=(-device "${GPU_DEVICE},edid=on,xres=${XRES},yres=${YRES}")
 test -z "${DISPLAY_OPTS}" || QEMU_ARGS+=(-display "${DISPLAY_OPTS}")
