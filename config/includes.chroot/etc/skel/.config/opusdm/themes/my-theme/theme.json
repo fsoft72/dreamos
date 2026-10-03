@@ -1,0 +1,40 @@
+{
+  "colors": {
+    "source_bg": "#00a0c0",
+    "source_fg": "#000000",
+    "dest_bg": "#d8d8d8",
+    "dest_fg": "#000080",
+    "dir_bg": "#b4b4b4",
+    "dir_fg": "#000080",
+    "file_bg": "#f6f5f4",
+    "file_fg": "#000000",
+    "selected_bg": "#000080",
+    "selected_fg": "#ffffff"
+  },
+  "appearance": {
+    "type_indicators": false,
+    "monospace_list": true,
+    "theme_window": true,
+    "theme_mode": "dark"
+  },
+  "fonts": {
+    "list": {
+      "family": "",
+      "size": 0
+    },
+    "ui": {
+      "family": "",
+      "size": 0
+    }
+  },
+  "surfaces": {
+    "lister": {
+      "image": null,
+      "fit": "fill"
+    },
+    "requester": {
+      "image": null,
+      "fit": "fill"
+    }
+  }
+}

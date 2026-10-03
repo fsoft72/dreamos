@@ -1,0 +1,24 @@
+[
+  {
+    "id": "fn-18d9d729a1a55104-0",
+    "name": "See Ramdisk",
+    "steps": [
+      {
+        "Internal": {
+          "cmd": "ChangeDir",
+          "args": {
+            "path": "/ramdisk"
+          }
+        }
+      },
+      {
+        "Internal": {
+          "cmd": "MakeDir",
+          "args": {
+            "name": "pizza"
+          }
+        }
+      }
+    ]
+  }
+]

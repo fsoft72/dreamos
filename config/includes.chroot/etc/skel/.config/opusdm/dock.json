@@ -1,0 +1,8 @@
+{
+  "apps": [
+    "org.kde.dolphin.desktop",
+    "org.kde.konsole.desktop",
+    "filezilla.desktop",
+    "brave-origin.desktop"
+  ]
+}

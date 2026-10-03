@@ -1,7 +1,7 @@
 {
   "theme": {
     "icon_set": {
-      "Custom": "breeze-dark"
+      "Custom": "my-theme"
     },
     "colors": {
       "source_bg": "#00a0c0",
@@ -10,7 +10,7 @@
       "dest_fg": "#000080",
       "dir_bg": "#b4b4b4",
       "dir_fg": "#000080",
-      "file_bg": "#b4b4b4",
+      "file_bg": "#f6f5f4",
       "file_fg": "#000000",
       "selected_bg": "#000080",
       "selected_fg": "#ffffff"
@@ -18,8 +18,8 @@
     "background": {
       "mode": "image",
       "solid": "#2e3436",
-      "gradient_start": "#241f31",
-      "gradient_end": "#3d3846",
+      "gradient_start": "#2e3436",
+      "gradient_end": "#555753",
       "gradient_angle": 180,
       "image_path": "/home/user/opusdm/backgrounds/dream01.jpg",
       "image_fit": "fill"
@@ -28,10 +28,35 @@
   "appearance": {
     "type_indicators": false,
     "monospace_list": true,
-    "theme_window": true
+    "theme_window": true,
+    "theme_mode": "dark"
   },
   "behavior": {
     "auto_refresh": true,
-    "auto_refresh_debounce_ms": 250
-  }
+    "auto_refresh_debounce_ms": 250,
+    "recursive_filter": false,
+    "status_format": "D: [%D/%d]  F: [%F/%f]  B: [%B/%b]",
+    "cache_size": 20
+  },
+  "fonts": {
+    "list": {
+      "family": "",
+      "size": 0
+    },
+    "ui": {
+      "family": "",
+      "size": 0
+    }
+  },
+  "surfaces": {
+    "lister": {
+      "image_path": null,
+      "fit": "fill"
+    },
+    "requester": {
+      "image_path": null,
+      "fit": "fill"
+    }
+  },
+  "look_version": 1
 }

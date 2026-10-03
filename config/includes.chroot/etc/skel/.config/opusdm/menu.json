@@ -1,0 +1,547 @@
+{
+  "items": [
+    {
+      "type": "folder",
+      "name": "Development",
+      "items": [
+        {
+          "type": "app",
+          "id": "cursor.desktop"
+        },
+        {
+          "type": "app",
+          "id": "com.github.Murmele.Gittyup.desktop"
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Graphics",
+      "items": [
+        {
+          "type": "app",
+          "id": "aseprite.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.gwenview.desktop"
+        },
+        {
+          "type": "app",
+          "id": "display-im7.q16.desktop"
+        },
+        {
+          "type": "app",
+          "id": "display-im7.q16hdri.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.inkscape.Inkscape.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.okular.desktop"
+        },
+        {
+          "type": "app",
+          "id": "qimgv.desktop"
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Internet",
+      "items": [
+        {
+          "type": "app",
+          "id": "org.kde.bluedevilwizard.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.bluedevilsendfile.desktop"
+        },
+        {
+          "type": "app",
+          "id": "brave-origin.desktop"
+        },
+        {
+          "type": "app",
+          "id": "brave-browser.desktop"
+        },
+        {
+          "type": "app",
+          "id": "filezilla.desktop"
+        },
+        {
+          "type": "app",
+          "id": "google-chrome.desktop"
+        },
+        {
+          "type": "app",
+          "id": "install4j_sz332n-JDownloader2.desktop"
+        },
+        {
+          "type": "app",
+          "id": "megasync.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.telegram.desktop._3c97cad3ea81748bc0047d0d9e0cbc64.desktop"
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Multimedia",
+      "items": [
+        {
+          "type": "app",
+          "id": "audacity.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.haruna.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.kdenlive.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.kwave.desktop"
+        },
+        {
+          "type": "app",
+          "id": "com.obsproject.Studio.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.qrca.desktop"
+        },
+        {
+          "type": "app",
+          "id": "vlc.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.pulseaudio.pavucontrol.desktop"
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Office",
+      "items": [
+        {
+          "type": "app",
+          "id": "libreoffice25.8-startcenter.desktop"
+        },
+        {
+          "type": "app",
+          "id": "libreoffice25.8-base.desktop"
+        },
+        {
+          "type": "app",
+          "id": "libreoffice25.8-calc.desktop"
+        },
+        {
+          "type": "app",
+          "id": "libreoffice25.8-draw.desktop"
+        },
+        {
+          "type": "app",
+          "id": "libreoffice25.8-impress.desktop"
+        },
+        {
+          "type": "app",
+          "id": "libreoffice25.8-math.desktop"
+        },
+        {
+          "type": "app",
+          "id": "libreoffice25.8-writer.desktop"
+        },
+        {
+          "type": "app",
+          "id": "libreoffice26.2-startcenter.desktop"
+        },
+        {
+          "type": "app",
+          "id": "libreoffice26.2-base.desktop"
+        },
+        {
+          "type": "app",
+          "id": "libreoffice26.2-calc.desktop"
+        },
+        {
+          "type": "app",
+          "id": "libreoffice26.2-draw.desktop"
+        },
+        {
+          "type": "app",
+          "id": "libreoffice26.2-impress.desktop"
+        },
+        {
+          "type": "app",
+          "id": "libreoffice26.2-math.desktop"
+        },
+        {
+          "type": "app",
+          "id": "libreoffice26.2-writer.desktop"
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Games",
+      "items": []
+    },
+    {
+      "type": "folder",
+      "name": "System",
+      "items": [
+        {
+          "type": "app",
+          "id": "btop.desktop"
+        },
+        {
+          "type": "app",
+          "id": "cool-retro-term.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.discover.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.dolphin.desktop"
+        },
+        {
+          "type": "app",
+          "id": "com.mitchellh.ghostty.desktop"
+        },
+        {
+          "type": "app",
+          "id": "gparted.desktop"
+        },
+        {
+          "type": "app",
+          "id": "htop.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.kinfocenter.desktop"
+        },
+        {
+          "type": "app",
+          "id": "jstest-gtk.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.konsole.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.ksystemlog.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.kwalletmanager.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.kmenuedit.desktop"
+        },
+        {
+          "type": "app",
+          "id": "nvidia-settings.desktop"
+        },
+        {
+          "type": "app",
+          "id": "nvtop.desktop"
+        },
+        {
+          "type": "app",
+          "id": "synaptic.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.plasma-systemmonitor.desktop"
+        },
+        {
+          "type": "app",
+          "id": "debian-uxterm.desktop"
+        },
+        {
+          "type": "app",
+          "id": "virt-manager.desktop"
+        },
+        {
+          "type": "app",
+          "id": "virtualbox.desktop"
+        },
+        {
+          "type": "app",
+          "id": "debian-xterm.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.yakuake.desktop"
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Settings",
+      "items": [
+        {
+          "type": "app",
+          "id": "im-config.desktop"
+        },
+        {
+          "type": "app",
+          "id": "kdesystemsettings.desktop"
+        },
+        {
+          "type": "app",
+          "id": "obconf.desktop"
+        },
+        {
+          "type": "app",
+          "id": "systemsettings.desktop"
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Utility",
+      "items": [
+        {
+          "type": "app",
+          "id": "org.kde.ark.desktop"
+        },
+        {
+          "type": "app",
+          "id": "com.anthropic.Claude.desktop"
+        },
+        {
+          "type": "app",
+          "id": "com.anthropic.Claude.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.gnome.DiskUtility.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.plasma.emojier.desktop"
+        },
+        {
+          "type": "app",
+          "id": "enpass.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.kate.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.kcalc.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.kcharselect.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.krename.desktop"
+        },
+        {
+          "type": "app",
+          "id": "nvim.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.spectacle.desktop"
+        },
+        {
+          "type": "app",
+          "id": "terminator.desktop"
+        },
+        {
+          "type": "app",
+          "id": "info.desktop"
+        },
+        {
+          "type": "app",
+          "id": "vim.desktop"
+        },
+        {
+          "type": "app",
+          "id": "winetricks.desktop"
+        },
+        {
+          "type": "app",
+          "id": "dev.zed.Zed.desktop"
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Other",
+      "items": [
+        {
+          "type": "app",
+          "id": "wine-Programs-Affinity.desktop"
+        },
+        {
+          "type": "app",
+          "id": "antigravity.desktop"
+        },
+        {
+          "type": "app",
+          "id": "wine-Programs-BlasterSuite Manager.desktop"
+        },
+        {
+          "type": "app",
+          "id": "Bootstrap Studio.desktop"
+        },
+        {
+          "type": "app",
+          "id": "wine-Programs-Buildbox-Buildbox.desktop"
+        },
+        {
+          "type": "app",
+          "id": "chrome-gbchcmhmhahfdphkhkmpfmihenigjmpp-Default.desktop"
+        },
+        {
+          "type": "app",
+          "id": "wine-Programs-Anthropic-Claude.desktop"
+        },
+        {
+          "type": "app",
+          "id": "Claude Desktop.desktop"
+        },
+        {
+          "type": "app",
+          "id": "wine-Programs-Dynamic Auto-Painter PRO 6-DAP6 Help.desktop"
+        },
+        {
+          "type": "app",
+          "id": "chrome-mpnpojknpmmopombnjdcgaaiekajbnjb-Default.desktop"
+        },
+        {
+          "type": "app",
+          "id": "wine-Programs-Dynamic Auto-Painter PRO 6-Dynamic Auto-Painter PRO 6.desktop"
+        },
+        {
+          "type": "app",
+          "id": "/home/fabio/.local/share/applications/wine/Programs/Dynamic Auto-Painter PRO 6/Dynamic Auto-Painter PRO 6.desktop"
+        },
+        {
+          "type": "app",
+          "id": "wine-Programs-Amazon-Kindle Create-EULA.desktop"
+        },
+        {
+          "type": "app",
+          "id": "wine-Programs-FluxBuilder.desktop"
+        },
+        {
+          "type": "app",
+          "id": "wine-Programs-Future Pinball-Future Pinball.desktop"
+        },
+        {
+          "type": "app",
+          "id": "wine-Programs-Future Pinball-Future Pinball Manual.desktop"
+        },
+        {
+          "type": "app",
+          "id": "wine-Programs-Future Pinball-Future Pinball Support Forums.desktop"
+        },
+        {
+          "type": "app",
+          "id": "chrome-fmgjjmmmlfnkbppncabfkddbjimcfncm-Default.desktop"
+        },
+        {
+          "type": "app",
+          "id": "Godot Game Engine.desktop"
+        },
+        {
+          "type": "app",
+          "id": "chrome-aghbiahbpaijignceidepookljebhfak-Default.desktop"
+        },
+        {
+          "type": "app",
+          "id": "org.kde.khelpcenter.desktop"
+        },
+        {
+          "type": "app",
+          "id": "wine-Programs-Amazon-Kindle Create-Kindle Create.desktop"
+        },
+        {
+          "type": "app",
+          "id": "Obsidian.desktop"
+        },
+        {
+          "type": "app",
+          "id": "nvidia-omniverse-launcher.desktop"
+        },
+        {
+          "type": "app",
+          "id": "nvidia-omniverse.desktop"
+        },
+        {
+          "type": "app",
+          "id": "brave-fiopdepnhlchbnkplkdpeckeekhmimjh-Default.desktop"
+        },
+        {
+          "type": "app",
+          "id": "rofi.desktop"
+        },
+        {
+          "type": "app",
+          "id": "rofi-theme-selector.desktop"
+        },
+        {
+          "type": "app",
+          "id": "RustDesk.desktop"
+        },
+        {
+          "type": "app",
+          "id": "chrome-kkghjbajgkcialbbimbifdcjilhcgoim-Profile_6.desktop"
+        },
+        {
+          "type": "app",
+          "id": "TablePlus.desktop"
+        },
+        {
+          "type": "app",
+          "id": "wine-Programs-Future Pinball-Uninstall Future Pinball.desktop"
+        },
+        {
+          "type": "app",
+          "id": "wine-Programs-Amazon-Kindle Create-Uninstall Kindle Create.desktop"
+        },
+        {
+          "type": "app",
+          "id": "UpNote.desktop"
+        },
+        {
+          "type": "app",
+          "id": "brave-ockgakocbiefapcffdhfaicjemobnnlc-Default.desktop"
+        },
+        {
+          "type": "app",
+          "id": "brave-ipjcnbghicjhlnafdjgpkboiddgljlbl-Default.desktop"
+        },
+        {
+          "type": "app",
+          "id": "woxxy.desktop"
+        },
+        {
+          "type": "app",
+          "id": "chrome-agimnkijcaahngcdmfeangaknmldooml-Default.desktop"
+        }
+      ]
+    }
+  ]
+}
