@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+- `scripts/Dockerfile.opusdm`: add the build dependencies pulled in by the
+  new OpusDM crates: `libarchive-dev`, `libssh2-1-dev`, `libpulse-dev`,
+  `libwebp-dev`, `libgstreamer1.0-dev`, `libgstreamer-plugins-base1.0-dev`,
+  `libgtk4-layer-shell-dev` plus `zlib1g-dev`, `libbz2-dev`, `liblzma-dev`,
+  `libzstd-dev`; removed the duplicated `libssl-dev`. Verified in the
+  rebuilt image: the whole OpusDM workspace (13 binaries) and the three
+  dreamos-tools crates compile in release mode.
+- `config/package-lists/opusdm.list.chroot`: new list with the runtime side
+  of those dependencies, which apt cannot infer because the binaries are
+  copied into `/usr/bin` (shared libraries, GStreamer plugins, PipeWire,
+  udisks2/upower/power-profiles-daemon/polkit/keyring services, xdg portals
+  and the external tools the binaries run: `xinput`, `setxkbmap`,
+  `notify-send`, `ddcutil`, `feh`, `pdftoppm`, `ffmpegthumbnailer`, `7z`,
+  `zip`, `ssh-keygen`, plus `parted`/`e2fsprogs` for filesys-extender).
+  `imagemagick` and `ffmpeg` are left out on purpose (optional thumbnail
+  fallbacks). NOT checked: an ISO build with the new list.
+
 - `start.sh`: the virgl GTK display now uses `gl=es` instead of `gl=on`.
   With desktop GL the QEMU window stayed black (boot menu included) on an
   X11 host with the proprietary NVIDIA driver; the OpenGL ES context

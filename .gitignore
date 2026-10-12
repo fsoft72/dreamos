@@ -42,6 +42,7 @@ live-image-*.packages
 !/config/package-lists/network.list.chroot
 !/config/package-lists/system.list.chroot
 !/config/package-lists/installer.list.chroot
+!/config/package-lists/opusdm.list.chroot
 
 # OpusDM binaries: staged by scripts/build-opusdm.sh into the ISO tree.
 # They are build artifacts (trixie container output), never committed.

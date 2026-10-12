@@ -22,7 +22,17 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
         libxi-dev \
         libgl1-mesa-dev \
         libssl-dev \
-        libssl-dev \
+        zlib1g-dev \
+        libbz2-dev \
+        liblzma-dev \
+        libzstd-dev \
+        libarchive-dev \
+        libssh2-1-dev \
+        libpulse-dev \
+        libwebp-dev \
+        libgstreamer1.0-dev \
+        libgstreamer-plugins-base1.0-dev \
+        libgtk4-layer-shell-dev \
         curl \
         ca-certificates \
         jq \

@@ -1,0 +1,72 @@
+# Runtime dependencies of the OpusDM binaries and dreamos-tools shipped in
+# /usr/bin. The binaries are copied in by build.sh, so apt does not know
+# about their shared libraries: every one is listed here. Keep in sync with
+# the -dev packages in scripts/Dockerfile.opusdm.
+
+# Shared libraries linked by the binaries
+libarchive13t64
+libgstreamer1.0-0
+libgstreamer-plugins-base1.0-0
+libgtk4-layer-shell0
+libpulse0
+libssh2-1t64
+libssl3t64
+libwebp7
+
+# Media player (opusdm-player, opusdm-viewer): GStreamer playbin3 + GTK4 sink
+gstreamer1.0-gtk4
+gstreamer1.0-plugins-base
+gstreamer1.0-plugins-good
+gstreamer1.0-plugins-bad
+gstreamer1.0-libav
+gstreamer1.0-pipewire
+
+# Audio (panel volume tray talks to PulseAudio, served by PipeWire)
+pipewire
+pipewire-pulse
+pipewire-audio
+wireplumber
+
+# Desktop services used by the panel and the hub
+udisks2
+upower
+power-profiles-daemon
+polkitd
+pkexec
+gnome-keyring
+dbus-x11
+libpam-systemd
+xdg-desktop-portal
+xdg-desktop-portal-gtk
+xdg-utils
+shared-mime-info
+desktop-file-utils
+gsettings-desktop-schemas
+
+# External tools the binaries run
+xinput
+x11-xkb-utils
+libnotify-bin
+ddcutil
+feh
+poppler-utils
+ffmpegthumbnailer
+p7zip-full
+zip
+unzip
+tar
+openssh-client
+procps
+
+# dreamos-tools (filesys-extender, nvidia-installer, machine-score)
+parted
+e2fsprogs
+dosfstools
+util-linux
+udev
+libxkbcommon-x11-0
+libwayland-client0
+libx11-6
+libxcursor1
+libxi6
+libxrandr2
