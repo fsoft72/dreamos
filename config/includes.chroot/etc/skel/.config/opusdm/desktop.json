@@ -2,7 +2,6 @@
   "icon_size": 48,
   "grid_spacing": 60,
   "grid_gap": 30,
-  "desktop_dir": "/ramdisk",
   "panel_position": "top",
   "dock_position": "bottom",
   "dock_icon_size": 48

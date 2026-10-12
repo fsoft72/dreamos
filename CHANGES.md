@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+- OpusDM default config: `build-opusdm.sh` no longer copies the
+  developer's `~/.config/opusdm` into `etc/skel` (it shipped personal
+  menus, hotkeys, startup apps, a known SSH host and a custom theme, and
+  its background rewrite targeted a `settings.json` key that no longer
+  exists). `etc/skel/.config/opusdm` now holds only two hand-written,
+  tracked defaults: `settings.json` (breeze-dark icons, the dream01
+  background as an image entry) and `desktop.json` (sizes, panel top,
+  dock bottom); the base `picom.conf` is copied from the OpusDM sources.
+  Everything else (hotkeys, menu, themes, ...) is created by OpusDM on
+  first run. Both JSON files were parsed with the real `Settings` and
+  `DesktopSettings` structs. NOT checked: a live boot with them.
+- `scripts/build-opusdm.sh`: new `--config-only` (stage background and
+  picom.conf, no compile, no docker) and persistent cargo target
+  directories (`cache/opusdm-target`, `cache/dreamos-tools-target`), so a
+  rebuild recompiles only what changed (second full run: 8 s). The unused
+  `OPUSDM_CONFIG_SRC` and the host `jq` requirement are gone.
+
 - `/etc/xdg/openbox/autostart`: start picom with
   `--config ~/.config/opusdm/picom.conf` (the file build-opusdm.sh seeds
   from the OpusDM config) instead of bare `picom --backend xrender`. The
