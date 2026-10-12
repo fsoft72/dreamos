@@ -7,7 +7,9 @@
 # binaries) against an already-built chroot/: it force-recopies the
 # includes and only redoes the binary (squashfs+iso) stage, skipping
 # debootstrap and package installation entirely. Falls back to a full
-# build automatically if chroot/ does not exist yet.
+# build automatically if chroot/ does not exist yet, or if the package
+# lists or auto/config changed since the last full build (the fast path
+# never installs packages, so it would silently ship the old set).
 set -euo pipefail
 
 FAST="true"
@@ -24,6 +26,7 @@ OPUSDM_TARBALL="vendor/opusdm/opusdm-bin.tar.gz"
 TOOLS_TARBALL="vendor/dreamos-tools/dreamos-tools-bin.tar.gz"
 HOST_UID="$(id -u)"
 HOST_GID="$(id -g)"
+PKG_STAMP=".build/packages.sha256"
 
 cd "${PROJECT_DIR}"
 
@@ -85,6 +88,17 @@ if [ "${FAST}" = "true" ]; then
         echo "==> --fast requested but chroot/ has no kernel installed; doing a full build first"
         FAST="false"
     fi
+fi
+
+# Fingerprint of everything that decides which packages land in the chroot.
+# Compared with the one recorded by the last full build.
+_pkg_fingerprint() {
+    find config/package-lists auto -type f -print0 2>/dev/null | sort -z \
+        | xargs -0 sha256sum | sha256sum | cut -d' ' -f1
+}
+if [ "${FAST}" = "true" ] && [ "$(cat "${PKG_STAMP}" 2>/dev/null || true)" != "$(_pkg_fingerprint)" ]; then
+    echo "==> --fast requested but package lists or auto/config changed since the last full build; doing a full build"
+    FAST="false"
 fi
 
 # Nothing may be staged under /home in the rootfs. live-config creates the
@@ -157,6 +171,13 @@ test -f "${PROJECT_DIR}/${LB_OUTPUT}" || {
     echo "ERROR: expected ${LB_OUTPUT} was not produced" >&2
     exit 1
 }
+
+# Record the package fingerprint only after a full build, the only path
+# that installs packages.
+if [ "${FAST}" = "false" ]; then
+    mkdir -p "$(dirname "${PKG_STAMP}")"
+    _pkg_fingerprint > "${PKG_STAMP}"
+fi
 
 mv "${PROJECT_DIR}/${LB_OUTPUT}" "${PROJECT_DIR}/${FINAL_ISO}"
 echo "==> ISO ready: ${PROJECT_DIR}/${FINAL_ISO}"

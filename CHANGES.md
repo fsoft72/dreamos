@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- `build.sh`: `--fast` now falls back to a full build when
+  `config/package-lists` or `auto/` changed since the last full build
+  (fingerprint stored in `.build/packages.sha256` after each full build).
+  Before, a new package list was silently ignored by the fast path, so the
+  ISO shipped OpusDM binaries without their shared libraries
+  (`libgstreamer-1.0.so.0: cannot open shared object file`). The first
+  `--fast` run after this change does a full build, as there is no stamp.
+
 - `scripts/Dockerfile.opusdm`: add the build dependencies pulled in by the
   new OpusDM crates: `libarchive-dev`, `libssh2-1-dev`, `libpulse-dev`,
   `libwebp-dev`, `libgstreamer1.0-dev`, `libgstreamer-plugins-base1.0-dev`,
