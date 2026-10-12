@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- `/etc/xdg/openbox/autostart`: start picom with
+  `--config ~/.config/opusdm/picom.conf` (the file build-opusdm.sh seeds
+  from the OpusDM config) instead of bare `picom --backend xrender`. The
+  bare call used picom's built-in defaults, so the live session had no
+  shadows, no inactive-window opacity and no fading. It also exports
+  `OPUSDM_PICOM_BASE` so the hub can regenerate the config when the opacity
+  is changed in Settings. NOT checked in a running live session.
+
 - `build.sh`: `--fast` now falls back to a full build when
   `config/package-lists` or `auto/` changed since the last full build
   (fingerprint stored in `.build/packages.sha256` after each full build).

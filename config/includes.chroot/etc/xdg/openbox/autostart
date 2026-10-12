@@ -9,5 +9,14 @@
 # the xrender backend: it needs no OpenGL, so it works the same on real
 # hardware, on virgl and on VMs without 3D acceleration. It starts before
 # opusdm-hub so the desktop windows are composited from the first frame.
-picom --backend xrender --daemon
+#
+# picom runs on the user's ~/.config/opusdm/picom.conf (seeded from
+# /etc/skel by build-opusdm.sh): xrender backend, shadows, window opacity,
+# fading. Without --config picom used its built-in defaults, so there were
+# no shadows and no transparency. The hub rewrites the opacity keys of that
+# file (Settings, Windows tab) from OPUSDM_PICOM_BASE and signals picom to
+# reload it (pkill -USR1 picom).
+OPUSDM_PICOM_BASE=/etc/skel/.config/opusdm/picom.conf
+export OPUSDM_PICOM_BASE
+picom --config "${HOME}/.config/opusdm/picom.conf" &
 opusdm-hub &
